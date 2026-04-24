@@ -27,6 +27,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'detector = uav_vision.detector_objetos:main',
         ],
     },
 )
