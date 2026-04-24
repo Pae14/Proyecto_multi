@@ -2,36 +2,56 @@
 
 Este proyecto contiene la infraestructura necesaria para la simulación y control de un sistema multi-robot que incluye un Dron (UAV), un Rover y un brazo robótico ABB.
 
-## Descripción de los Paquetes
+## 👥 Roles y Responsabilidades
 
-1. **multi_robot_bringup (C++)**: Paquete central que gestiona los archivos de lanzamiento (`launch`), los mundos de simulación (`world`), configuraciones generales, modelos 3D y mapas.
-2. **uav_vision (Python)**: Enfocado en el procesamiento de imágenes, IA y visión artificial para el dron.
-3. **rover_navigation (C++)**: Implementa la lógica de navegación, localización y mapeo (SLAM) para el robot terrestre.
-4. **abb_bridge (Python)**: Actúa como puente de comunicación entre ROS 2 y RobotStudio para el brazo robótico.
+### 👩‍💻 Rol 1: Especialista en Visión y Percepción (El "Ojo")
+**Misión:** Darle inteligencia al dron.
+- **Paquete principal:** `uav_vision`
+- **Tareas:**
+    - Configurar la cámara RGB-D del dron en Gazebo.
+    - Diseñar y entrenar la red neuronal (CNN) con kernels grandes para filtrado de ruido y detección de objetivos.
+    - Optimización de capas pooling y stride para rendimiento en tiempo real.
+    - Programar el nodo de visión para traducir detección de píxeles a coordenadas 3D.
 
-## Estructura del Proyecto
+### 👩‍💻 Rol 2: Especialista en ROS y Navegación (El "Cerebro Móvil")
+**Misión:** Dominar Gazebo y gestionar la movilidad del Rover.
+- **Paquete principal:** `rover_navigation` y `multi_robot_bringup`
+- **Tareas:**
+    - Configuración de archivos Launch con namespaces para coexistencia Dron/Rover.
+    - Configuración del árbol de transformaciones (TF Tree).
+    - Ajuste del NavStack, mapeo con LiDAR y recepción de Goal Poses desde el sistema de visión.
+
+### 👩‍💻 Rol 3: Especialista en Manipulación e Integración (El "Músculo")
+**Misión:** Controlar RobotStudio y conectar Windows con Ubuntu.
+- **Paquete principal:** `abb_bridge`
+- **Tareas:**
+    - Diseño de estación en RobotStudio y programación RAPID para trayectorias de recogida.
+    - Configuración de comunicación red/firewall entre Windows (RobotStudio) y Ubuntu (ROS 2).
+    - Creación del puente de comunicación (Socket TCP/Driver) para coordinar la llegada del Rover con la acción del brazo.
+
+## 📁 Estructura del Proyecto
 
 ```text
 src/proyecto_multi/
-├── multi_robot_bringup/      # Lanzamientos y mundos Gazebo
+├── multi_robot_bringup/      # Lanzamientos y mundos Gazebo (Rol 2)
 │   ├── launch/               # Archivos .launch.py
 │   ├── world/                # Mundos (.sdf, .world)
 │   ├── config/               # Configuraciones (.yaml, .rviz)
 │   ├── models/               # Modelos 3D
 │   └── maps/                 # Mapas generados
-├── uav_vision/               # IA y Visión (Python)
+├── uav_vision/               # IA y Visión (Rol 1)
 │   ├── uav_vision/           # Código fuente Python
 │   └── launch/               # Lanzamientos de visión
-├── rover_navigation/         # Navegación (C++)
+├── rover_navigation/         # Navegación (Rol 2)
 │   ├── src/                  # Código fuente C++
 │   ├── launch/               # Lanzamientos de navegación
 │   └── config/               # Parámetros de Nav2/SLAM
-└── abb_bridge/               # Puente RobotStudio (Python)
+└── abb_bridge/               # Puente RobotStudio (Rol 3)
     ├── abb_bridge/           # Código fuente Python
     └── launch/               # Lanzamientos del puente
 ```
 
-## Guía de Compilación
+## 🛠️ Guía de Compilación
 
 ### 1. Preparar el entorno
 Asegúrate de estar en la raíz de tu espacio de trabajo (`ros2_ws`) y tener ROS 2 Jazzy activo:
@@ -42,15 +62,11 @@ cd ~/ros2_ws
 ```
 
 ### 2. Compilar
-Para compilar específicamente los paquetes de este proyecto:
-
 ```bash
 colcon build --symlink-install --packages-select multi_robot_bringup uav_vision rover_navigation abb_bridge
 ```
 
 ### 3. Cargar el Workspace
-Una vez terminada la compilación, activa los paquetes en tu terminal actual:
-
 ```bash
 source install/setup.bash
 ```
