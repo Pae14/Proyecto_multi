@@ -12,7 +12,7 @@ Este proyecto contiene la infraestructura necesaria para la simulación y contro
     - Diseñar y entrenar la red neuronal para filtrado de ruido y detección de objetivos.
     - Programar el nodo de visión para traducir detección de píxeles a coordenadas 3D.
 
-### 👩‍💻 Rol 2: Especialista en ROS y Navegación (El "Cerebro Móvil")
+### 👩‍💻 Rol 2: ROS y Navegación 
 **Misión:** Control de Gazebo y gestionar la movilidad del Rover.
 - **Paquete principal:** `rover_navigation` y `multi_robot_bringup`
 - **Tareas:**
@@ -33,28 +33,14 @@ Este proyecto contiene la infraestructura necesaria para la simulación y contro
 ```text
 src/proyecto_multi/
 ├── multi_robot_bringup/      # Lanzamientos y mundos Gazebo (Rol 2)
-│   ├── launch/               # Archivos .launch.py
-│   ├── world/                # Mundos (.sdf, .world)
-│   ├── config/               # Configuraciones (.yaml, .rviz)
-│   ├── models/               # Modelos 3D
-│   └── maps/                 # Mapas generados
 ├── uav_vision/               # IA y Visión (Rol 1)
-│   ├── uav_vision/           # Código fuente Python
-│   └── launch/               # Lanzamientos de visión
 ├── rover_navigation/         # Navegación (Rol 2)
-│   ├── src/                  # Código fuente C++
-│   ├── launch/               # Lanzamientos de navegación
-│   └── config/               # Parámetros de Nav2/SLAM
 └── abb_bridge/               # Puente RobotStudio (Rol 3)
-    ├── abb_bridge/           # Código fuente Python
-    └── launch/               # Lanzamientos del puente
 ```
 
 ## 🛠️ Guía de Compilación
 
 ### 1. Preparar el entorno
-Asegúrate de estar en la raíz de tu espacio de trabajo (`ros2_ws`) y tener ROS 2 Jazzy activo:
-
 ```bash
 source /opt/ros/jazzy/setup.bash
 cd ~/ros2_ws
@@ -69,3 +55,47 @@ colcon build --symlink-install --packages-select multi_robot_bringup uav_vision 
 ```bash
 source install/setup.bash
 ```
+
+## 🚀 Guía de Trabajo con Git (Colaboración)
+
+Para que el equipo trabaje unido sin borrar el código de las demás, seguid estos pasos:
+
+### 1. Obtener el proyecto (Clonar)
+Si es la primera vez que vas a trabajar en una máquina:
+```bash
+git clone https://github.com/Pae14/Proyecto_multi.git
+```
+
+### 2. Crear tu propia "Rama" (Branch)
+**IMPORTANTE:** Nunca trabajéis directamente en la rama `main`. Cread una rama para vuestro rol:
+```bash
+git checkout -b rama-vision      # Para Rol 1
+git checkout -b rama-navegacion  # Para Rol 2
+git checkout -b rama-abb         # Para Rol 3
+```
+
+### 3. Guardar tus cambios (Commit)
+Cuando hayas hecho una mejora en el código:
+```bash
+git add .
+git commit -m "Descripción breve de lo que has hecho (ej: Añadida red neuronal)"
+```
+
+### 4. Subir tus cambios a GitHub (Push)
+La primera vez que subas una rama nueva:
+```bash
+git push -u origin tu-nombre-de-rama
+```
+Las siguientes veces basta con:
+```bash
+git push
+```
+
+### 5. Mantenerte actualizada
+Antes de empezar a trabajar cada día, descarga los cambios de tus compañeras:
+```bash
+git pull origin main
+```
+
+### 6. Fusionar cambios (Merge)
+Cuando tu parte funcione perfectamente, ve a la web de GitHub y pulsa en **"New Pull Request"** para pasar tus cambios de tu rama a la rama `main`.
