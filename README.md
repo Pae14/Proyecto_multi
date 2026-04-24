@@ -4,24 +4,24 @@ Este proyecto contiene la infraestructura necesaria para la simulación y contro
 
 ## 👥 Roles y Responsabilidades
 
-### 👩‍💻 Rol 1: Especialista en Visión y Percepción (El "Ojo")
+### 👩‍💻 Rol 1:Visión y Percepción 
 **Misión:** Darle inteligencia al dron.
 - **Paquete principal:** `uav_vision`
 - **Tareas:**
     - Configurar la cámara RGB-D del dron en Gazebo.
-    - Diseñar y entrenar la red neuronal (CNN) con kernels grandes para filtrado de ruido y detección de objetivos.
+    - Diseñar y entrenar la red neuronal para filtrado de ruido y detección de objetivos.
     - Optimización de capas pooling y stride para rendimiento en tiempo real.
     - Programar el nodo de visión para traducir detección de píxeles a coordenadas 3D.
 
-### 👩‍💻 Rol 2: Especialista en ROS y Navegación (El "Cerebro Móvil")
-**Misión:** Dominar Gazebo y gestionar la movilidad del Rover.
+### 👩‍💻 Rol 2:ROS y Navegación 
+**Misión:** Gazebo y gestionar la movilidad del Rover.
 - **Paquete principal:** `rover_navigation` y `multi_robot_bringup`
 - **Tareas:**
     - Configuración de archivos Launch con namespaces para coexistencia Dron/Rover.
     - Configuración del árbol de transformaciones (TF Tree).
     - Ajuste del NavStack, mapeo con LiDAR y recepción de Goal Poses desde el sistema de visión.
 
-### 👩‍💻 Rol 3: Especialista en Manipulación e Integración (El "Músculo")
+### 👩‍💻 Rol 3: Manipulación e Integración
 **Misión:** Controlar RobotStudio y conectar Windows con Ubuntu.
 - **Paquete principal:** `abb_bridge`
 - **Tareas:**
