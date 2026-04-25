@@ -8,12 +8,11 @@ def generate_launch_description():
 
     pkg_path = get_package_share_directory('multi_robot_bringup')
     
-    ros_ws_src = '/home/paula/ros2_ws/src'
     aws_models_paths = [
-        os.path.join(ros_ws_src, 'ThirdParty/aws-robomaker-racetrack-world/models'),
-        os.path.join(ros_ws_src, 'ThirdParty/aws-robomaker-small-warehouse-world/models'),
-        os.path.join(ros_ws_src, 'ThirdParty/aws-robomaker-bookstore-world/models'),
-        os.path.join(ros_ws_src, 'ThirdParty/aws-robomaker-small-house-world/models'),
+        os.path.join(pkg_path, 'ThirdParty/aws-robomaker-racetrack-world/models'),
+        os.path.join(pkg_path, 'ThirdParty/aws-robomaker-small-warehouse-world/models'),
+        os.path.join(pkg_path, 'ThirdParty/aws-robomaker-bookstore-world/models'),
+        os.path.join(pkg_path, 'ThirdParty/aws-robomaker-small-house-world/models'),
         os.path.join(pkg_path, 'models')
     ]
     
