@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+  <model name="simple_drone">
+    <link name="base_link">
+      <inertial>
+        <mass>1.5</mass>
+        <inertia>
+          <ixx>0.0347563</ixx>
+          <iyy>0.0458929</iyy>
+          <izz>0.0977</izz>
+        </inertia>
+      </inertial>
+      <collision name="collision">
+        <geometry><box><size>0.4 0.4 0.1</size></box></geometry>
+      </collision>
+      <visual name="visual">
+        <geometry><mesh><uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/X3 UAV/tip/meshes/x3.dae</uri></mesh></geometry>
+        <material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material>
+      </visual>
+      <sensor name="camera" type="camera">
+        <pose>0.2 0 0 0 0 0</pose>
+        <always_on>1</always_on>
+        <update_rate>30</update_rate>
+        <visualize>true</visualize>
+        <topic>camera/image_raw</topic>
+      </sensor>
+    </link>
+  </model>
+</sdf>

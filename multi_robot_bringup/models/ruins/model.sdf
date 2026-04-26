@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+	<model name="ruins">
+		<static>true</static>
+		<link name="link">
+			<!-- Ajustamos la pose para evitar rotaciones internas complejas -->
+			<pose>0 0 0 0 0 0</pose>
+			<collision name="collision">
+				<geometry>
+					<mesh>
+						<uri>model://ruins/mesh/ruins.dae</uri>
+						<scale>6 6 6</scale>
+					</mesh>
+				</geometry>
+				<surface>
+					<friction>
+						<ode>
+							<mu>1.0</mu>
+							<mu2>1.0</mu2>
+						</ode>
+					</friction>
+				</surface>
+			</collision>
+			<visual name="visual">
+				<pose>0 0 0 1.5708 0 0</pose> <!-- La rotación solo en el visual -->
+				<geometry>
+					<mesh>
+						<uri>model://ruins/mesh/ruins.dae</uri>
+						<scale>6 6 6</scale>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+	</model>
+</sdf>

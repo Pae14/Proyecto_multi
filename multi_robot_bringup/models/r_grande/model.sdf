@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+	<model name="r_grande">
+		<static>true</static>
+		<link name="link">
+			<collision name="collision">
+				<geometry>
+					<mesh>
+						<uri>model://ruins/mesh/ruins.dae</uri>
+						<scale>10 10 8</scale>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="visual">
+				<pose>0 0 0 1.5708 0 0</pose>
+				<geometry>
+					<mesh>
+						<uri>model://ruins/mesh/ruins.dae</uri>
+						<scale>10 10 8</scale>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+	</model>
+</sdf>
