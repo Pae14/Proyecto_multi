@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+<!--Añade a Gazebo los plugins de sumulación para el control del robot-->
+  <xacro:macro name="simulacion" params="prefix">
+    <gazebo>
+      <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
+        <ros>
+          <namespace>/${prefix}</namespace>
+        </ros>
+
+        <left_joint>left_wheel_joint</left_joint>
+        <right_joint>right_wheel_joint</right_joint>
+
+        <wheel_separation>0.3</wheel_separation>
+        <wheel_radius>0.05</wheel_radius>
+
+        <cmd_vel_topic>cmd_vel</cmd_vel_topic>
+        <odom_topic>odom</odom_topic>
+
+        <publish_odom>true</publish_odom>
+        <publish_odom_tf>true</publish_odom_tf>
+      </plugin>
+    </gazebo>
+  </xacro:macro>
+</robot>
