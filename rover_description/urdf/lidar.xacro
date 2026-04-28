@@ -22,14 +22,10 @@
           </range>
         </ray>
 
-        <plugin name="laser_plugin" filename="libgazebo_ros_ray_sensor.so">
-          <ros>
-            <namespace>/${prefix}</namespace>
-          </ros>
-          <topicName>scan</topicName>
-          <frameName>laser_link</frameName>
-        </plugin>
-
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        
+        <topic>/model/rover/scan</topic>
       </sensor>
     </gazebo>
 

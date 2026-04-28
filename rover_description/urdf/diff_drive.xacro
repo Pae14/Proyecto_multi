@@ -1,25 +1,55 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-<!--Añade a Gazebo los plugins de sumulación para el control del robot-->
+
   <xacro:macro name="simulacion" params="prefix">
     <gazebo>
-      <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
-        <ros>
-          <namespace>/${prefix}</namespace>
-        </ros>
 
-        <left_joint>left_wheel_joint</left_joint>
-        <right_joint>right_wheel_joint</right_joint>
+      <!-- Diff Drive -->
+      <plugin name="gz::sim::systems::DiffDrive"
+              filename="gz-sim-diff-drive-system">
 
-        <wheel_separation>0.3</wheel_separation>
-        <wheel_radius>0.05</wheel_radius>
+        <left_joint>left_front_wheel_joint</left_joint>
+        <left_joint>left_rear_wheel_joint</left_joint>
 
-        <cmd_vel_topic>cmd_vel</cmd_vel_topic>
-        <odom_topic>odom</odom_topic>
+        <right_joint>right_front_wheel_joint</right_joint>
+        <right_joint>right_rear_wheel_joint</right_joint>
+
+        <wheel_separation>0.41</wheel_separation>
+        <wheel_radius>0.15</wheel_radius>
+
+        <max_wheel_torque>200</max_wheel_torque>
+        <max_wheel_acceleration>10.0</max_wheel_acceleration>
+
+        <!-- Topics correctos -->
+        <topic>/model/${prefix}/cmd_vel</topic>
+        <odom_topic>/model/${prefix}/odometry</odom_topic>
+
+        <!-- TF correcto -->
+        <frame_id>odom</frame_id>
+        <child_frame_id>base_link</child_frame_id>
 
         <publish_odom>true</publish_odom>
         <publish_odom_tf>true</publish_odom_tf>
+        <publish_wheel_tf>true</publish_wheel_tf>
+
+        <odometry_publisher_frequency>30</odometry_publisher_frequency>
+
       </plugin>
+
+      <!-- Joint States -->
+      <plugin name="gz::sim::systems::JointStatePublisher"
+              filename="gz-sim-joint-state-publisher-system">
+
+        <topic>/model/${prefix}/joint_state</topic>
+
+        <joint_name>left_front_wheel_joint</joint_name>
+        <joint_name>left_rear_wheel_joint</joint_name>
+        <joint_name>right_front_wheel_joint</joint_name>
+        <joint_name>right_rear_wheel_joint</joint_name>
+
+      </plugin>
+
     </gazebo>
   </xacro:macro>
+
 </robot>
