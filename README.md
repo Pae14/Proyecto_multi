@@ -54,6 +54,8 @@ colcon build --symlink-install --packages-select multi_robot_bringup uav_vision 
 ### 3. Cargar el Workspace
 ```bash
 source install/setup.bash
+# Si usas un entorno virtual (venv) para las librerías de IA:
+export PYTHONPATH=$PYTHONPATH:/home/paula/venv/lib/python3.12/site-packages
 ```
 
 ## 🚀 Guía de Ejecución

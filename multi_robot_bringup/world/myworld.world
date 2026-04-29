@@ -55,7 +55,7 @@
     <include>
       <uri>https://fuel.gazebosim.org/1.0/antonytodo/models/CERBERUS_M100_SENSOR_CONFIG_1</uri>
       <name>uav_cerberus</name>
-      <static>true</static>
+      <static>false</static>
       <pose>0 10 5.0 0 0 0</pose>
     </include>
 
