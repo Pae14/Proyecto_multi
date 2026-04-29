@@ -40,21 +40,29 @@ src/proyecto_multi/
 
 ## 🛠️ Guía de Compilación
 
-### 1. Preparar el entorno
+Para compilar el proyecto correctamente, sigue estos pasos en tu terminal:
+
+### 1. Preparar el entorno de ROS 2
 ```bash
 source /opt/ros/jazzy/setup.bash
 cd ~/ros2_ws
 ```
 
-### 2. Compilar
+### 2. Compilar los paquetes del proyecto
+Puedes compilar todos los paquetes necesarios con el siguiente comando:
 ```bash
 colcon build --symlink-install --packages-select multi_robot_bringup uav_vision rover_navigation abb_bridge
 ```
 
-### 3. Cargar el Workspace
+### 3. Cargar el Workspace (Instalación)
+Una vez finalizada la compilación, debes cargar los paquetes en tu terminal actual:
 ```bash
 source install/setup.bash
-# Si usas un entorno virtual (venv) para las librerías de IA:
+```
+
+### 4. Configurar el entorno de Python (IA/Visión)
+Si el sistema de visión requiere dependencias externas, asegúrate de añadir tu entorno virtual al PATH:
+```bash
 export PYTHONPATH=$PYTHONPATH:/home/paula/venv/lib/python3.12/site-packages
 ```
 
