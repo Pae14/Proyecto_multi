@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Macro principal -->
+  <xacro:macro name="irb120_ros2_control" params="">
+
+    <ros2_control name="GazeboSystem" type="system">
+      <hardware>
+        <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+      </hardware>
+
+      <!-- Macro para definir cada joint -->
+      <xacro:macro name="arm_joint" params="name lower upper">
+        <joint name="${name}">
+          <command_interface name="position">
+            <param name="min">${lower}</param>
+            <param name="max">${upper}</param>
+          </command_interface>
+          <state_interface name="position"/>
+          <state_interface name="velocity"/>
+        </joint>
+      </xacro:macro>
+
+      <!-- Llamadas a los joints -->
+      <xacro:arm_joint name="joint_1" lower="-2.879" upper="2.879"/>
+      <xacro:arm_joint name="joint_2" lower="-1.919" upper="1.919"/>
+      <xacro:arm_joint name="joint_3" lower="-1.919" upper="1.221"/>
+      <xacro:arm_joint name="joint_4" lower="-2.792" upper="2.792"/>
+      <xacro:arm_joint name="joint_5" lower="-2.094" upper="2.094"/>
+      <xacro:arm_joint name="joint_6" lower="-6.981" upper="6.981"/>
+
+    </ros2_control>
+
+  </xacro:macro>
+
+</robot>
