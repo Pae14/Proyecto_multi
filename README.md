@@ -40,30 +40,25 @@ src/proyecto_multi/
 
 ## 🛠️ Guía de Compilación
 
-Para compilar el proyecto correctamente, sigue estos pasos en tu terminal:
-
-### 1. Preparar el entorno de ROS 2
+### 1. Preparar el entorno
 ```bash
 source /opt/ros/jazzy/setup.bash
 cd ~/ros2_ws
 ```
 
-### 2. Compilar los paquetes del proyecto
-Puedes compilar todos los paquetes necesarios con el siguiente comando:
+### 2. Compilar el sistema
+Para compilar **todos** los paquetes del workspace (recomendado):
 ```bash
-colcon build --symlink-install --packages-select multi_robot_bringup uav_vision rover_navigation abb_bridge
+colcon build --symlink-install
+```
+O si prefieres compilar solo los paquetes específicos de este proyecto:
+```bash
+colcon build --symlink-install --packages-select multi_robot_bringup uav_vision rover_description rover_navigation abb_bridge
 ```
 
-### 3. Cargar el Workspace (Instalación)
-Una vez finalizada la compilación, debes cargar los paquetes en tu terminal actual:
+### 3. Cargar el Workspace
 ```bash
 source install/setup.bash
-```
-
-### 4. Configurar el entorno de Python (IA/Visión)
-Si el sistema de visión requiere dependencias externas, asegúrate de añadir tu entorno virtual al PATH:
-```bash
-export PYTHONPATH=$PYTHONPATH:/home/paula/venv/lib/python3.12/site-packages
 ```
 
 ## 🚀 Guía de Ejecución
@@ -145,9 +140,9 @@ git push origin main
 ```
 
 ### 7. Compilar tras los cambios
-Cada vez que descargues cambios nuevos (`pull`) o fusiones una rama (`merge`), es fundamental volver a compilar el proyecto:
+Cada vez que descargues cambios nuevos (`pull`) o fusiones una rama (`merge`), es fundamental volver a compilar **todo** el proyecto:
 ```bash
 cd ~/ros2_ws
-colcon build --symlink-install --packages-select multi_robot_bringup uav_vision rover_navigation abb_bridge
+colcon build --symlink-install
 source install/setup.bash
 ```
