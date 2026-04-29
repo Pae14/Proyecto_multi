@@ -1,31 +1,25 @@
 from launch import LaunchDescription
-from launch.actions import TimerAction
-from launch_ros.actions import Node
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
 
-    slam = Node(
-        package='slam_toolbox',
-        executable='async_slam_toolbox_node',
-        namespace='rover',
-        parameters=[{'use_sim_time': True}],
-        output='screen'
-    )
-
-    nav2 = Node(
-        package='nav2_bringup',
-        executable='bringup_launch.py',
-        namespace='rover',
-        parameters=[{'use_sim_time': True}],
-        output='screen'
-    )
-
-    nav2_delayed = TimerAction(
-        period=5.0,
-        actions=[nav2]
+    nav2_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution([
+                FindPackageShare('nav2_bringup'),
+                'launch',
+                'bringup_launch.py'
+            ])
+        ),
+        launch_arguments={
+            'use_sim_time': 'true',
+            'params_file': '/config/nav2.yaml'
+        }.items()
     )
 
     return LaunchDescription([
-        slam,
-        nav2_delayed
+        nav2_launch
     ])
