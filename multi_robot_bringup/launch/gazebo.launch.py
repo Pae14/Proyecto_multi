@@ -60,18 +60,18 @@ def generate_launch_description():
         arguments=[
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
 
-            # ROVER (corregido)
+            # ROVER
             '/model/rover/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
             '/model/rover/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+            '/model/rover/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
 
-            # DRON (déjalo si existe)
-            #'/model/uav_cerberus/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
-
+            # DRON
             f'/world/{world_name}/model/uav_cerberus/link/base_link/sensor/camera/image@sensor_msgs/msg/Image[gz.msgs.Image',
         ],
         remappings=[
             ('/model/rover/cmd_vel', '/rover/cmd_vel'),
             ('/model/rover/odometry', '/rover/odom'),
+            ('/model/rover/scan', '/rover/scan'),
 
             ('/model/uav_cerberus/cmd_vel', '/uav/cmd_vel'),
             (f'/world/{world_name}/model/uav_cerberus/link/base_link/sensor/camera/image', '/uav/camera/image_raw'),
