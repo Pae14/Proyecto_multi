@@ -26,7 +26,7 @@
 
         <!-- TF correcto -->
         <frame_id>odom</frame_id>
-        <child_frame_id>base_link</child_frame_id>
+        <child_frame_id>base_footprint</child_frame_id>
 
         <publish_odom>true</publish_odom>
         <publish_odom_tf>true</publish_odom_tf>
