@@ -39,6 +39,13 @@ class SeguidorDron(Node):
         
         distancia = math.sqrt(dx**2 + dy**2)
         
+        # Log de diagnóstico
+        self.get_logger().info(
+            f'📍 Rover: [{self.rover_pose.position.x:.2f}, {self.rover_pose.position.y:.2f}] '
+            f'🎯 Obj: [{self.target_global.x:.2f}, {self.target_global.y:.2f}] '
+            f'📏 Dist: {distancia:.2f}', 
+            once=False)
+        
         # Obtener orientación actual del Rover (yaw)
         q = self.rover_pose.orientation
         siny_cosp = 2 * (q.w * q.z + q.x * q.y)
@@ -55,21 +62,34 @@ class SeguidorDron(Node):
 
         twist = Twist()
 
-        if distancia > 0.5:
-            # Si el ángulo es muy grande, primero girar sobre sí mismo
-            if abs(error_angulo) > 0.5:
-                twist.linear.x = 0.0
+        if distancia > 0.6:
+            # ... (lógica de crucero rápida que ya tenemos)
+            if abs(error_angulo) > 0.05:
                 twist.angular.z = 0.8 * error_angulo
             else:
-                twist.linear.x = 0.6
-                twist.angular.z = 1.0 * error_angulo
+                twist.angular.z = 0.0
+
+            if twist.angular.z > 1.2: twist.angular.z = 1.2
+            if twist.angular.z < -1.2: twist.angular.z = -1.2
+
+            if abs(error_angulo) < 0.2:
+                twist.linear.x = 4.0
+            elif abs(error_angulo) < 0.5:
+                twist.linear.x = 2.0
+            else:
+                twist.linear.x = 0.8
             
             self.get_logger().info(f'Navegando: dist={distancia:.2f}, error_ang={error_angulo:.2f}')
+        elif distancia > 0.02:
+            # Aproximación de precisión milimétrica (zona de 2cm a 60cm)
+            twist.linear.x = 0.25 # Velocidad de aproximación lenta
+            twist.angular.z = 1.2 * error_angulo 
+            self.get_logger().info(f'Aproximación final: dist={distancia:.2f}')
         else:
-            self.get_logger().info('¡OBJETIVO ALCANZADO!')
-            self.target_global = None
+            # Solo se detiene si está a menos de 2cm
             twist.linear.x = 0.0
             twist.angular.z = 0.0
+            self.get_logger().info('🎯 OBJETIVO ALCANZADO (PRECISIÓN 2CM)', once=True)
 
         self.cmd_pub.publish(twist)
 

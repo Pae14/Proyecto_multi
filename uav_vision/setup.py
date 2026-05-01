@@ -26,7 +26,8 @@ setup(
         'console_scripts': [
             'detector_objetos = uav_vision.detector_objetos:main',
             'dron_autonomo = uav_vision.dron_autonomo:main',
-            'teleop_dron = uav_vision.teleop_dron:main'
+            'teleop_dron = uav_vision.teleop_dron:main',
+            'recolector_dataset = uav_vision.recolector_dataset:main'
         ],
     },
 )

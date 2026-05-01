@@ -38,44 +38,40 @@ src/proyecto_multi/
 └── abb_bridge/               # Puente RobotStudio (Rol 3)
 ```
 
-## 🛠️ Guía de Compilación
+## 🛠️ Guía de Compilación (Todo a la vez)
 
-### 1. Preparar el entorno
+Para compilar todo el espacio de trabajo desde la raíz (`~/ros2_ws`):
+
 ```bash
+# 1. Cargar el entorno de ROS 2
 source /opt/ros/jazzy/setup.bash
-cd ~/ros2_ws
-```
 
-### 2. Compilar el sistema
-Para compilar **todos** los paquetes del workspace (recomendado):
-```bash
+# 2. Compilar todos los paquetes
 colcon build --symlink-install
-```
-O si prefieres compilar solo los paquetes específicos de este proyecto:
-```bash
-colcon build --symlink-install --packages-select multi_robot_bringup uav_vision rover_description rover_navigation abb_bridge
-```
 
-### 3. Cargar el Workspace
-```bash
+# 3. Cargar el entorno del workspace (IMPORTANTE: Hacer esto en cada terminal nueva)
 source install/setup.bash
 ```
 
 ## 🚀 Guía de Ejecución
 
-Sigue este orden para poner en marcha el sistema:
+En lugar de usar `ros2 run` para cada nodo, utilizamos archivos **Launch** para ejecutar varios nodos a la vez.
 
-### 1. Lanzar la simulación (Gazebo)
-Este comando abre Gazebo con el mundo configurado, el Rover y el Dron:
+### 1. Todo el Sistema (Recomendado)
+Este comando lanza Gazebo, los robots, el puente de comunicación, la visión y el seguidor:
+```bash
+ros2 launch multi_robot_bringup todo_el_sistema.launch.py
+```
+
+### 2. Solo Simulación (Gazebo + Robots)
+Si solo quieres abrir el mundo con los robots sin los nodos de IA/Navegación:
 ```bash
 ros2 launch multi_robot_bringup gazebo.launch.py
 ```
 
-### 2. Lanzar el sistema de visión
-En una **nueva terminal**, ejecuta el nodo que procesa la cámara del dron:
-```bash
-ros2 launch uav_vision vision.launch.py
-```
+### 3. Otros componentes (por separado)
+*   **Visión e IA:** `ros2 launch uav_vision vision.launch.py`
+*   **Puente ABB:** `ros2 launch abb_bridge abb_bridge.launch.py`
 
 ## 🚀 Guía de Trabajo con Git (Colaboración)
 
