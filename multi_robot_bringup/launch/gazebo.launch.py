@@ -20,6 +20,7 @@ def generate_launch_description():
     
     gz_resource_path = ':'.join(aws_models_paths)
     world = os.path.join(pkg_path, 'world', 'myworld.world')
+    world_name = 'myworld'
 
     robot_description = ParameterValue(
         Command(['xacro ', PathJoinSubstitution([FindPackageShare('rover_description'), 'urdf', 'rover.xacro'])]),
@@ -35,7 +36,7 @@ def generate_launch_description():
     spawn_rover = Node(
         package='ros_gz_sim',
         executable='create',
-        arguments=['-topic', 'robot_description', '-name', 'rover', '-z', '0.1'],
+        arguments=['-topic', 'robot_description', '-name', 'rover','-x', '-10.0', '-z', '0.1'],
         output='screen'
     )
 
@@ -72,5 +73,6 @@ def generate_launch_description():
         SetEnvironmentVariable(name='GZ_SIM_RESOURCE_PATH', value=gz_resource_path),
         ExecuteProcess(cmd=['gz', 'sim', '-r', world], output='screen'),
         robot_state_pub,
-        spawn_rover
+        spawn_rover,
+        bridge
     ])

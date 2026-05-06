@@ -39,7 +39,6 @@ def generate_launch_description():
     autonomo = Node(package='uav_vision', executable='dron_autonomo', output='screen')
 
     return LaunchDescription([
-        SetEnvironmentVariable(name='PYTHONPATH', value=os.environ.get('PYTHONPATH', '') + ':/home/paula/venv/lib/python3.12/site-packages'),
         gazebo,
         bridge_maestro,
         TimerAction(period=5.0, actions=[vision, seguidor, autonomo])
