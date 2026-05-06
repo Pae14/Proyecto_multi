@@ -38,23 +38,40 @@ src/proyecto_multi/
 └── abb_bridge/               # Puente RobotStudio (Rol 3)
 ```
 
-## 🛠️ Guía de Compilación
+## 🛠️ Guía de Compilación (Todo a la vez)
 
-### 1. Preparar el entorno
+Para compilar todo el espacio de trabajo desde la raíz (`~/ros2_ws`):
+
 ```bash
+# 1. Cargar el entorno de ROS 2
 source /opt/ros/jazzy/setup.bash
-cd ~/ros2_ws
-```
 
-### 2. Compilar
-```bash
-colcon build --symlink-install --packages-select multi_robot_bringup uav_vision rover_navigation abb_bridge
-```
+# 2. Compilar todos los paquetes
+colcon build --symlink-install
 
-### 3. Cargar el Workspace
-```bash
+# 3. Cargar el entorno del workspace (IMPORTANTE: Hacer esto en cada terminal nueva)
 source install/setup.bash
 ```
+
+## 🚀 Guía de Ejecución
+
+En lugar de usar `ros2 run` para cada nodo, utilizamos archivos **Launch** para ejecutar varios nodos a la vez.
+
+### 1. Todo el Sistema (Recomendado)
+Este comando lanza Gazebo, los robots, el puente de comunicación, la visión y el seguidor:
+```bash
+ros2 launch multi_robot_bringup todo_el_sistema.launch.py
+```
+
+### 2. Solo Simulación (Gazebo + Robots)
+Si solo quieres abrir el mundo con los robots sin los nodos de IA/Navegación:
+```bash
+ros2 launch multi_robot_bringup gazebo.launch.py
+```
+
+### 3. Otros componentes (por separado)
+*   **Visión e IA:** `ros2 launch uav_vision vision.launch.py`
+*   **Puente ABB:** `ros2 launch abb_bridge abb_bridge.launch.py`
 
 ## 🚀 Guía de Trabajo con Git (Colaboración)
 
@@ -98,4 +115,30 @@ git pull origin main
 ```
 
 ### 6. Fusionar cambios (Merge)
-Cuando tu parte funcione perfectamente, ve a la web de GitHub y pulsa en **"New Pull Request"** para pasar tus cambios de tu rama a la rama `main`.
+Cuando tu parte funcione perfectamente, puedes fusionar tus cambios en la rama `main`.
+
+#### Opción A: Por GitHub (Recomendado)
+Ve a la web de GitHub y pulsa en **"New Pull Request"** para pasar los cambios de tu rama a `main`.
+
+#### Opción B: Por comandos (CLI)
+```bash
+# 1. Asegúrate de estar en la rama main
+git checkout main
+
+# 2. Actualiza tu rama main local con lo último del servidor
+git pull origin main
+
+# 3. Fusiona tu rama de trabajo (ej: rama-vision) en main
+git merge rama-vision
+```bash
+# 4. Sube la rama main actualizada a GitHub
+git push origin main
+```
+
+### 7. Compilar tras los cambios
+Cada vez que descargues cambios nuevos (`pull`) o fusiones una rama (`merge`), es fundamental volver a compilar **todo** el proyecto:
+```bash
+cd ~/ros2_ws
+colcon build --symlink-install
+source install/setup.bash
+```
