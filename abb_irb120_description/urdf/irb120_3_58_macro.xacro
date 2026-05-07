@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <robot name="irb120_3_58" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+  <material name="light_grey"><color rgba="0.9 0.9 0.9 1"/></material>
+  <material name="grey"><color rgba="0.4 0.4 0.4 1"/></material>
+
   <xacro:macro name="abb_irb120_3_58" params="prefix">
     <!-- link list -->
     <link name="${prefix}base_link">
@@ -14,7 +17,7 @@
         <geometry>
           <mesh filename="package://abb_irb120_description/meshes/visual/base_link.stl"/>
         </geometry>
-        
+        <material name = "light_grey"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -35,6 +38,7 @@
         <geometry>
           <mesh filename="package://abb_irb120_description/meshes/visual/link_1.stl"/>
         </geometry>
+        <material name = "light_grey"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -54,6 +58,7 @@
         <geometry>
           <mesh filename="package://abb_irb120_description/meshes/visual/link_2.stl"/>
         </geometry>
+        <material name = "light_grey"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -73,6 +78,7 @@
         <geometry>
           <mesh filename="package://abb_irb120_description/meshes/visual/link_3.stl"/>
         </geometry>
+        <material name = "light_grey"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -92,6 +98,7 @@
         <geometry>
           <mesh filename="package://abb_irb120_description/meshes/visual/link_4.stl"/>
         </geometry>
+        <material name = "light_grey"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -111,6 +118,7 @@
         <geometry>
           <mesh filename="package://abb_irb120_description/meshes/visual/link_5.stl"/>
         </geometry>
+        <material name = "light_grey"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -130,6 +138,7 @@
         <geometry>
           <mesh filename="package://abb_irb120_description/meshes/visual/link_6.stl"/>
         </geometry>
+        <material name = "light_grey"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -145,7 +154,7 @@
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <parent link="${prefix}base_link"/>
       <child link="${prefix}link_1"/>
-      <limit effort="100.0" lower="-2.87979" upper="2.87979" velocity="4.36332"/>
+      <limit effort="1000.0" lower="-2.87979" upper="2.87979" velocity="4.36332"/>
       <axis xyz="0 0 1"/>
       <dynamics damping="0.0" friction="0.0"/>
     </joint>
@@ -223,6 +232,7 @@
         <geometry>
           <mesh filename="package://abb_irb120_description/meshes/visual/herramienta.stl"/>
         </geometry>
+        <material name = "grey"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
