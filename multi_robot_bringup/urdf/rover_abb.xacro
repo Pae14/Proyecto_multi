@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<robot name="rover_abb" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:arg name="prefix" default="" />
+    
+    <!--xacros del rover-->
+    <xacro:include filename="$(find rover_description)/urdf/rover.xacro"/>    
+    <xacro:include filename="$(find rover_description)/urdf/gazebo_plugins.xacro"/>    
+    <xacro:include filename="$(find rover_description)/urdf/lidar.xacro"/>  
+
+    <!--xacro del ABB-->
+    <xacro:include filename="$(find abb_irb120_description)/urdf/irb120_3_58_macro.xacro" /> 
+
+    <!--link para unir el rover con el abb-->
+    <joint name="union_rover_abb" type="fixed">
+        <parent link="$(arg prefix)base_link"/>
+        <child link="base_link"/> 
+        <origin xyz="0.2 0 0.352" rpy="0 0 0"/> 
+    </joint>
+
+    <!--lidar-->
+    <xacro:lidar_plugin prefix="$(arg prefix)"/>
+
+</robot>

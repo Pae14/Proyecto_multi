@@ -2,14 +2,18 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:macro name="irb120_gazebo_plugins" params="">
-
+    <!--plugin de ros2 control para mover el brazo en gazebo-->
     <gazebo>
       <plugin filename="gz_ros2_control-system"
               name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-        <parameters>$(find abb_irb120_description)/config/controllers.yaml</parameters>
+        <parameters>$(find multi_robot_bringup)/config/controllers.yaml</parameters>
+        <ros>
+          <remapping>/robot_description:=/rover/robot_description</remapping>
+        </ros>
       </plugin>
     </gazebo>
 
+    <!--publicar joint states-->
     <gazebo>
       <plugin filename="gz-sim-joint-state-publisher-system"
               name="gz::sim::systems::JointStatePublisher">
@@ -22,6 +26,7 @@
       </plugin>
     </gazebo>
 
+    <!--desactiva las colisiones internas del brazo-->
     <gazebo reference="base_link"><self_collide>false</self_collide></gazebo>
     <gazebo reference="link_1"><self_collide>false</self_collide></gazebo>
     <gazebo reference="link_2"><self_collide>false</self_collide></gazebo>

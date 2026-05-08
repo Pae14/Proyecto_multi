@@ -84,10 +84,17 @@ def generate_launch_description():
             'gz_type_name': 'gz.msgs.Pose_V',
             'direction': 'GZ_TO_ROS'
         },
+        {
+            'ros_topic_name': '/tf_static',
+            'gz_topic_name': f'/{robot_name}/tf_static', 
+            'ros_type_name': 'tf2_msgs/msg/TFMessage',
+            'gz_type_name': 'gz.msgs.Pose_V', 
+            'direction': 'GZ_TO_ROS'
+        },
 
         {
             'ros_topic_name': f'/{robot_name}/joint_states',
-            'gz_topic_name': f'/model/{robot_name}/joint_state',
+            'gz_topic_name': f'/world/bosque_ruinas_final/model/{robot_name}/joint_state',
             'ros_type_name': 'sensor_msgs/msg/JointState',
             'gz_type_name': 'gz.msgs.Model',
             'direction': 'GZ_TO_ROS'
@@ -115,6 +122,13 @@ def generate_launch_description():
     )
 
     nodes_list.append(
+        SetEnvironmentVariable(
+            name='GZ_SIM_SYSTEM_PLUGIN_PATH',
+            value='/opt/ros/jazzy/lib' 
+        )
+    )
+
+    nodes_list.append(
         ExecuteProcess(
             cmd=['gz', 'sim', '-r', world_path],
             output='screen'
@@ -124,25 +138,22 @@ def generate_launch_description():
         Command([
             'xacro ',
             PathJoinSubstitution([
-                FindPackageShare('rover_description'),
+                FindPackageShare('multi_robot_bringup'),
                 'urdf',
-                'robot.urdf.xacro'
+                'rover_abb.xacro'
             ]), ' ',
             'prefix:=', f'{robot_name}/', ' ',
         ]),
+        value_type=str
     )
     # Robot group
     robot_group = GroupAction([
 
         PushRosNamespace(robot_name),
-
         Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
-            parameters=[{
-                'robot_description': robot_description,
-                'use_sim_time': True,
-            }]
+            parameters=[{'robot_description': robot_description, 'use_sim_time': True}]
         ),
 
         Node(
@@ -150,12 +161,6 @@ def generate_launch_description():
             executable='create',
             arguments=['-topic', 'robot_description', '-name', robot_name, '-x', '0', '-y', str(y_pos)]
         ),
-        Node(
-                package='joint_state_publisher',
-                executable='joint_state_publisher',
-                name='joint_state_publisher',
-                parameters=[{'use_sim_time': True}]
-            )
     ])
     nodes_list.append(robot_group)
     nodes_list.append(
@@ -177,7 +182,20 @@ def generate_launch_description():
         Node(
             package='rviz2',
             executable='rviz2',
-            parameters=[{'use_sim_time': True}]
+            parameters=[{'use_sim_time': False}]
+        )
+    )
+
+    nodes_list.append(
+        ExecuteProcess(
+            cmd=['ros2', 'control', 'load_controller', '--set-state', 'active', 'joint_state_broadcaster', '-c', '/rover/controller_manager'],
+            output='screen'
+        )
+    )
+    nodes_list.append(
+        ExecuteProcess(
+            cmd=['ros2', 'control', 'load_controller', '--set-state', 'active', 'arm_controller', '-c', '/rover/controller_manager'],
+            output='screen'
         )
     )
 

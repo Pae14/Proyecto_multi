@@ -250,16 +250,10 @@
   </xacro:macro>
   <xacro:abb_irb120_3_58 prefix="" />
 
-    <link name="world" />
-    <joint name="world_to_base" type="fixed">
-        <parent link="world" />
-        <child link="base_link" />
-        <origin xyz="0 0 0" rpy="0 0 0" />
-    </joint>
 
-    <xacro:include filename="irb120_gazebo.xacro" />
-    <xacro:include filename="irb120_control.xacro" />
-    <xacro:irb120_gazebo_plugins />
-    <xacro:irb120_ros2_control />
+  <xacro:include filename="irb120_gazebo.xacro" />
+  <xacro:include filename="irb120_control.xacro" />
+  <xacro:irb120_gazebo_plugins />
+  <xacro:irb120_ros2_control />
 </robot>
 
