@@ -23,6 +23,7 @@ def generate_launch_description():
             '/uav/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
             '/model/rover/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry',
             '/model/rover/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
+            '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
             f'/world/{world_name}/model/uav_cerberus/link/base_link/sensor/camera_front/image@sensor_msgs/msg/Image[gz.msgs.Image'
         ],
         remappings=[
@@ -41,5 +42,5 @@ def generate_launch_description():
     return LaunchDescription([
         gazebo,
         bridge_maestro,
-        TimerAction(period=5.0, actions=[vision, seguidor, autonomo])
+        TimerAction(period=5.0, actions=[vision, seguidor, autonomo]),
     ])
