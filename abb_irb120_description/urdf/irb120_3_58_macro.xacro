@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot name="irb120_3_58" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <material name="light_grey"><color rgba="0.9 0.9 0.9 1"/></material>
   <material name="grey"><color rgba="0.4 0.4 0.4 1"/></material>
@@ -248,12 +248,7 @@
       <origin xyz="0 0 0" rpy="0 0 0"/>
     </joint>
   </xacro:macro>
-  <xacro:abb_irb120_3_58 prefix="" />
 
 
-  <xacro:include filename="irb120_gazebo.xacro" />
-  <xacro:include filename="irb120_control.xacro" />
-  <xacro:irb120_gazebo_plugins />
-  <xacro:irb120_ros2_control />
 </robot>
 

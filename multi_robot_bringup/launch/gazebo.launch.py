@@ -120,7 +120,7 @@ def generate_launch_description():
             value=gz_resource_path
         )
     )
-
+    #este es para que encuentre la libreria del ros2 control
     nodes_list.append(
         SetEnvironmentVariable(
             name='GZ_SIM_SYSTEM_PLUGIN_PATH',
@@ -134,7 +134,7 @@ def generate_launch_description():
             output='screen'
         )
     )
-    robot_description = ParameterValue(
+    robot_description = ParameterValue( #cargar el rover
         Command([
             'xacro ',
             PathJoinSubstitution([
@@ -182,16 +182,17 @@ def generate_launch_description():
         Node(
             package='rviz2',
             executable='rviz2',
-            parameters=[{'use_sim_time': False}]
+            parameters=[{'use_sim_time': False}] #false para que no de problemas el rviz
         )
     )
-
+    #cargar el controlador joint_state_broadcaster
     nodes_list.append(
         ExecuteProcess(
             cmd=['ros2', 'control', 'load_controller', '--set-state', 'active', 'joint_state_broadcaster', '-c', '/rover/controller_manager'],
             output='screen'
         )
     )
+    #cargar el arm controlles
     nodes_list.append(
         ExecuteProcess(
             cmd=['ros2', 'control', 'load_controller', '--set-state', 'active', 'arm_controller', '-c', '/rover/controller_manager'],

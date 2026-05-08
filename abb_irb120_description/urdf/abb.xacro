@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<robot name="abb_irb120" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find abb_irb120_description)/urdf/irb120_3_58_macro.xacro"/>
+    <xacro:include filename="$(find abb_irb120_description)/urdf/irb120_gazebo.xacro"/>
+    <xacro:include filename="$(find abb_irb120_description)/urdf/irb120_control.xacro"/>
+    <xacro:irb120_gazebo_plugins />
+    <xacro:irb120_ros2_control />
+    <xacro:abb_irb120_3_58 prefix="arm_" />
+
+</robot>
