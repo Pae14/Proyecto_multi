@@ -6,7 +6,7 @@
     <xacro:property name="lidar_height" value="0.4"/> 
     <xacro:property name="lidar_radius" value="0.05"/>
 
-    <link name="lidar_link">
+    <link name="$(arg prefix)lidar_link">
       <visual>
         <geometry>
           <cylinder radius="${lidar_radius}" length="0.05"/>
@@ -22,19 +22,19 @@
       </inertial>
     </link>
 
-    <joint name="lidar_joint" type="fixed">
-      <parent link="base_link"/>
-      <child link="lidar_link"/>
+    <joint name="$(arg prefix)lidar_joint" type="fixed">
+      <parent link="$(arg prefix)base_link"/>
+      <child link="$(arg prefix)lidar_link"/>
       <origin xyz="0 0 ${lidar_height}" rpy="0 0 3.14159"/>
     </joint>
 
-    <gazebo reference="lidar_link">
-      <sensor name="lidar_sensor" type="gpu_lidar">
+    <gazebo reference="$(arg prefix)lidar_link">
+      <sensor name="$(arg prefix)lidar_sensor" type="gpu_lidar">
 
-        <gz_frame_id>${prefix}/lidar_link</gz_frame_id> 
+        <gz_frame_id>$(arg prefix)lidar_link</gz_frame_id> 
         <update_rate>10</update_rate>
 
-        <topic>/model/${prefix}/scan</topic>
+        <topic>$(arg prefix)scan</topic>
 
         <ray>
           <scan>

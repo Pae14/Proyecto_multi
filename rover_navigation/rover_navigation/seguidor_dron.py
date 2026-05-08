@@ -41,9 +41,9 @@ class SeguidorDron(Node):
         
         # Log de diagnóstico
         self.get_logger().info(
-            f'📍 Rover: [{self.rover_pose.position.x:.2f}, {self.rover_pose.position.y:.2f}] '
-            f'🎯 Obj: [{self.target_global.x:.2f}, {self.target_global.y:.2f}] '
-            f'📏 Dist: {distancia:.2f}', 
+            f'Rover: [{self.rover_pose.position.x:.2f}, {self.rover_pose.position.y:.2f}] '
+            f'Obj: [{self.target_global.x:.2f}, {self.target_global.y:.2f}] '
+            f'Dist: {distancia:.2f}', 
             once=False)
         
         # Obtener orientación actual del Rover (yaw)
@@ -89,7 +89,7 @@ class SeguidorDron(Node):
             # Solo se detiene si está a menos de 2cm
             twist.linear.x = 0.0
             twist.angular.z = 0.0
-            self.get_logger().info('🎯 OBJETIVO ALCANZADO (PRECISIÓN 2CM)', once=True)
+            self.get_logger().info('OBJETIVO ALCANZADO (PRECISIÓN 2CM)', once=True)
 
         self.cmd_pub.publish(twist)
 
