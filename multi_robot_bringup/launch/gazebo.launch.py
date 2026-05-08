@@ -87,9 +87,16 @@ def generate_launch_description():
 
         {
             'ros_topic_name': f'/{robot_name}/joint_states',
-            'gz_topic_name': f'/model/{robot_name}/joint_state',
+            'gz_topic_name': f'/world/bosque_ruinas_final/model/{robot_name}/joint_state',
             'ros_type_name': 'sensor_msgs/msg/JointState',
             'gz_type_name': 'gz.msgs.Model',
+            'direction': 'GZ_TO_ROS'
+        },
+        {
+            'ros_topic_name': '/tf_static',
+            'gz_topic_name': f'/{robot_name}/tf_static',
+            'ros_type_name': 'tf2_msgs/msg/TFMessage',
+            'gz_type_name': 'gz.msgs.Pose_V',
             'direction': 'GZ_TO_ROS'
         }
     ]
@@ -142,6 +149,7 @@ def generate_launch_description():
             parameters=[{
                 'robot_description': robot_description,
                 'use_sim_time': True,
+                'publish_frequency': 50.0,
             }]
         ),
 
@@ -150,12 +158,7 @@ def generate_launch_description():
             executable='create',
             arguments=['-topic', 'robot_description', '-name', robot_name, '-x', '0', '-y', str(y_pos)]
         ),
-        Node(
-                package='joint_state_publisher',
-                executable='joint_state_publisher',
-                name='joint_state_publisher',
-                parameters=[{'use_sim_time': True}]
-            )
+
     ])
     nodes_list.append(robot_group)
     nodes_list.append(
@@ -177,7 +180,7 @@ def generate_launch_description():
         Node(
             package='rviz2',
             executable='rviz2',
-            parameters=[{'use_sim_time': True}]
+            parameters=[{'use_sim_time': False}]
         )
     )
 

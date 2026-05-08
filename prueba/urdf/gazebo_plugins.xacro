@@ -37,7 +37,6 @@
       <joint_name>$(arg prefix)left_rear_wheel_joint</joint_name>
       <joint_name>$(arg prefix)right_front_wheel_joint</joint_name>
       <joint_name>$(arg prefix)right_rear_wheel_joint</joint_name>
-      <update_rate>50</update_rate>
     </plugin>
   </gazebo>
 </robot>
