@@ -27,11 +27,13 @@ class DetectorDobleValidacion(Node):
         self.bridge = CvBridge()
         self.drone_pose = None
         
-        # Cargar Modelos
-        path_yolo11 = os.path.expanduser('~/ros2_ws/yolo11n-seg.pt')
+        # Cargar Modelos desde la nueva carpeta de pesos del proyecto
+        base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        
+        path_yolo11 = os.path.join(base_path, 'weights', 'yolo11n-seg.pt')
         self.model_yolo11 = YOLO(path_yolo11) if os.path.exists(path_yolo11) else None
         
-        path_best = os.path.expanduser('~/ros2_ws/entrenamiento/runs/segment/entrenamiento_dron_vision/deteccion_objetos_v1/weights/best.pt')
+        path_best = os.path.join(base_path, 'weights', 'best.pt')
         self.model_best = YOLO(path_best) if os.path.exists(path_best) else None
 
         self.get_logger().info('✅ SISTEMA DOBLE ACTIVADO: YOLO11 (Ojeador) + BEST.PT (Experto)')
