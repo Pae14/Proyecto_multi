@@ -14,6 +14,9 @@
       <wheel_separation>0.9</wheel_separation>
       <wheel_radius>0.15</wheel_radius>
 
+      <max_wheel_torque>1000</max_wheel_torque>    
+      <max_wheel_acceleration>5.0</max_wheel_acceleration>
+
       <!--Topic para la odometría-->
       <frame_id>$(arg prefix)odom</frame_id>
       <child_frame_id>$(arg prefix)base_footprint</child_frame_id>

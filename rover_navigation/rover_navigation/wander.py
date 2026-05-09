@@ -67,7 +67,7 @@ class Wander(Node):
             msg_vel.angular.z = 0.8 * self.direccion_giro
         else:
             # Camino despejado
-            msg_vel.linear.x = 0.3
+            msg_vel.linear.x = 1.0
             msg_vel.angular.z = 0.0
 
         self.publisher.publish(msg_vel)
