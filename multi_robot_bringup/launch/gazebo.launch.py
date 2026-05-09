@@ -1,10 +1,9 @@
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess, SetEnvironmentVariable, GroupAction
+from launch.actions import ExecuteProcess, SetEnvironmentVariable, GroupAction, TimerAction
 from launch_ros.actions import Node, PushRosNamespace
 from launch.substitutions import Command, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.parameter_descriptions import ParameterValue
-from launch.actions import TimerAction
 
 from ament_index_python.packages import get_package_share_directory
 
@@ -53,7 +52,6 @@ def generate_launch_description():
             'gz_type_name': 'gz.msgs.Clock',
             'direction': 'GZ_TO_ROS'
         },
-
         {
             'ros_topic_name': f'/{robot_name}/scan',
             'gz_topic_name': f'/{robot_name}/scan',
@@ -61,14 +59,12 @@ def generate_launch_description():
             'gz_type_name': 'gz.msgs.LaserScan',
             'direction': 'GZ_TO_ROS'
         },
-
         {   'ros_topic_name': f'/{robot_name}/camera/image_raw', 
             'gz_topic_name': f'/{robot_name}/camera/image_raw',
             'ros_type_name': 'sensor_msgs/msg/Image', 
             'gz_type_name': 'gz.msgs.Image',
             'direction': 'GZ_TO_ROS'
         },
-
         {
             'ros_topic_name': f'/{robot_name}/camera/camera_info',
             'gz_topic_name': f'/{robot_name}/camera/camera_info',
@@ -76,7 +72,6 @@ def generate_launch_description():
             'gz_type_name': 'gz.msgs.CameraInfo',
             'direction': 'GZ_TO_ROS'
         },
-
         {
             'ros_topic_name': f'/{robot_name}/cmd_vel',
             'gz_topic_name': f'/{robot_name}/cmd_vel',
@@ -84,7 +79,6 @@ def generate_launch_description():
             'gz_type_name': 'gz.msgs.Twist',
             'direction': 'ROS_TO_GZ'
         },
-
         {
             'ros_topic_name': f'/{robot_name}/odom',
             'gz_topic_name': f'/{robot_name}/odom',
@@ -92,7 +86,6 @@ def generate_launch_description():
             'gz_type_name': 'gz.msgs.Odometry',
             'direction': 'GZ_TO_ROS'
         },
-
         {
             'ros_topic_name': '/tf',
             'gz_topic_name': f'/{robot_name}/tf',
@@ -107,18 +100,11 @@ def generate_launch_description():
             'gz_type_name': 'gz.msgs.Pose_V', 
             'direction': 'GZ_TO_ROS'
         },
-
+        {
             'ros_topic_name': f'/{robot_name}/joint_states',
             'gz_topic_name': f'/world/bosque_ruinas_final/model/{robot_name}/joint_state',
             'ros_type_name': 'sensor_msgs/msg/JointState',
             'gz_type_name': 'gz.msgs.Model',
-            'direction': 'GZ_TO_ROS'
-        },
-        {
-            'ros_topic_name': '/tf_static',
-            'gz_topic_name': f'/{robot_name}/tf_static',
-            'ros_type_name': 'tf2_msgs/msg/TFMessage',
-            'gz_type_name': 'gz.msgs.Pose_V',
             'direction': 'GZ_TO_ROS'
         }
     ]
@@ -175,7 +161,6 @@ def generate_launch_description():
         Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
-            parameters=[{'robot_description': robot_description, 'use_sim_time': False}]
             parameters=[{
                 'robot_description': robot_description,
                 'use_sim_time': True,
@@ -210,7 +195,6 @@ def generate_launch_description():
         Node(
             package='rviz2',
             executable='rviz2',
-            parameters=[{'use_sim_time': False}] #false para que no de problemas el rviz
             parameters=[{'use_sim_time': False}]
         )
     )
