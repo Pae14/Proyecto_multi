@@ -10,6 +10,8 @@ ament_python_install_package(${PROJECT_NAME})
 
 install(PROGRAMS
   rover_navigation/seguidor_dron.py
+  rover_navigation/wander.py
+  rover_navigation/seguidor_wander.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

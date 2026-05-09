@@ -38,7 +38,7 @@ def generate_launch_description():
 
     robot_name = 'rover'
 
-    x_pos = 0.0
+    x_pos = -6
     y_pos = 0.0
 
     # =========================
@@ -59,6 +59,21 @@ def generate_launch_description():
             'gz_topic_name': f'/{robot_name}/scan',
             'ros_type_name': 'sensor_msgs/msg/LaserScan',
             'gz_type_name': 'gz.msgs.LaserScan',
+            'direction': 'GZ_TO_ROS'
+        },
+
+        {   'ros_topic_name': f'/{robot_name}/camera/image_raw', 
+            'gz_topic_name': f'/{robot_name}/camera/image_raw',
+            'ros_type_name': 'sensor_msgs/msg/Image', 
+            'gz_type_name': 'gz.msgs.Image',
+            'direction': 'GZ_TO_ROS'
+        },
+
+        {
+            'ros_topic_name': f'/{robot_name}/camera/camera_info',
+            'gz_topic_name': f'/{robot_name}/camera/camera_info',
+            'ros_type_name': 'sensor_msgs/msg/CameraInfo',
+            'gz_type_name': 'gz.msgs.CameraInfo',
             'direction': 'GZ_TO_ROS'
         },
 
@@ -93,6 +108,19 @@ def generate_launch_description():
             'direction': 'GZ_TO_ROS'
         },
 
+            'ros_topic_name': f'/{robot_name}/joint_states',
+            'gz_topic_name': f'/world/bosque_ruinas_final/model/{robot_name}/joint_state',
+            'ros_type_name': 'sensor_msgs/msg/JointState',
+            'gz_type_name': 'gz.msgs.Model',
+            'direction': 'GZ_TO_ROS'
+        },
+        {
+            'ros_topic_name': '/tf_static',
+            'gz_topic_name': f'/{robot_name}/tf_static',
+            'ros_type_name': 'tf2_msgs/msg/TFMessage',
+            'gz_type_name': 'gz.msgs.Pose_V',
+            'direction': 'GZ_TO_ROS'
+        }
     ]
 
     # Guardar YAML temporal
@@ -148,13 +176,19 @@ def generate_launch_description():
             package='robot_state_publisher',
             executable='robot_state_publisher',
             parameters=[{'robot_description': robot_description, 'use_sim_time': False}]
+            parameters=[{
+                'robot_description': robot_description,
+                'use_sim_time': True,
+                'publish_frequency': 50.0,
+            }]
         ),
 
         Node(
             package='ros_gz_sim',
             executable='create',
-            arguments=['-topic', 'robot_description', '-name', robot_name, '-x', '0', '-y', str(y_pos)]
+            arguments=['-topic', 'robot_description', '-name', robot_name, '-x', str(x_pos), '-y', str(y_pos)]
         ),
+
     ])
     nodes_list.append(robot_group)
     nodes_list.append(
@@ -177,6 +211,7 @@ def generate_launch_description():
             package='rviz2',
             executable='rviz2',
             parameters=[{'use_sim_time': False}] #false para que no de problemas el rviz
+            parameters=[{'use_sim_time': False}]
         )
     )
     load_joint_state_broadcaster = TimerAction(
