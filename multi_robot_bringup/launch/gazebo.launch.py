@@ -4,6 +4,7 @@ from launch_ros.actions import Node, PushRosNamespace
 from launch.substitutions import Command, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.parameter_descriptions import ParameterValue
+from launch.actions import TimerAction
 
 from ament_index_python.packages import get_package_share_directory
 
@@ -92,13 +93,6 @@ def generate_launch_description():
             'direction': 'GZ_TO_ROS'
         },
 
-        {
-            'ros_topic_name': f'/{robot_name}/joint_states',
-            'gz_topic_name': f'/world/bosque_ruinas_final/model/{robot_name}/joint_state',
-            'ros_type_name': 'sensor_msgs/msg/JointState',
-            'gz_type_name': 'gz.msgs.Model',
-            'direction': 'GZ_TO_ROS'
-        }
     ]
 
     # Guardar YAML temporal
@@ -153,7 +147,7 @@ def generate_launch_description():
         Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
-            parameters=[{'robot_description': robot_description, 'use_sim_time': True}]
+            parameters=[{'robot_description': robot_description, 'use_sim_time': False}]
         ),
 
         Node(
@@ -185,19 +179,30 @@ def generate_launch_description():
             parameters=[{'use_sim_time': False}] #false para que no de problemas el rviz
         )
     )
-    #cargar el controlador joint_state_broadcaster
-    nodes_list.append(
-        ExecuteProcess(
-            cmd=['ros2', 'control', 'load_controller', '--set-state', 'active', 'joint_state_broadcaster', '-c', '/rover/controller_manager'],
-            output='screen'
-        )
+    load_joint_state_broadcaster = TimerAction(
+        period=15.0, 
+        actions=[
+            Node(
+                package="controller_manager",
+                executable="spawner",
+                arguments=["joint_state_broadcaster", "--controller-manager", "/rover/controller_manager"],
+            )
+        ]
     )
-    #cargar el arm controlles
-    nodes_list.append(
-        ExecuteProcess(
-            cmd=['ros2', 'control', 'load_controller', '--set-state', 'active', 'arm_controller', '-c', '/rover/controller_manager'],
-            output='screen'
-        )
+
+    # 2. Spawner del Arm Controller con retraso (un poco más que el anterior)
+    load_arm_controller = TimerAction(
+        period=18.0,
+        actions=[
+            Node(
+                package="controller_manager",
+                executable="spawner",
+                arguments=["arm_controller", "--controller-manager", "/rover/controller_manager"],
+            )
+        ]
     )
+
+    nodes_list.append(load_joint_state_broadcaster)
+    nodes_list.append(load_arm_controller)
 
     return LaunchDescription(nodes_list)
