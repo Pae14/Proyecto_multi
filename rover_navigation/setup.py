@@ -23,6 +23,8 @@ setup(
     entry_points={
         'console_scripts': [
             'seguidor_dron = rover_navigation.seguidor_dron:main',
+            'wander = rover_navigation.wander:main',
+            'seguidor_wander = rover_navigation.seguidor_wander:main'
         ],
     },
 )

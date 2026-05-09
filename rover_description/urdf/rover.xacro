@@ -44,13 +44,13 @@
 
   <link name="$(arg prefix)base_link">
     <visual>
-      <origin xyz="0 0 0.175" rpy="0 0 0"/>
+      <origin xyz="0 0 0.25" rpy="0 0 0"/>
       <geometry>
         <box size="1 0.7 0.35"/>
       </geometry>
     </visual>
     <collision>
-      <origin xyz="0 0 0.175"/>
+      <origin xyz="0 0 0.25"/>
       <geometry>
         <box size="1 0.7 0.35"/>
       </geometry>
@@ -157,29 +157,57 @@
   <joint name="$(arg prefix)left_front_wheel_joint" type="continuous">
     <parent link="$(arg prefix)base_link"/>
     <child link="$(arg prefix)left_front_wheel"/>
-    <origin xyz="0.3 ${wheel_separation} 0.15" rpy="1.57 0 0"/>
+    <origin xyz="0.3 ${wheel_separation} 0.15" rpy="-1.57 0 0"/>
     <axis xyz="0 0 1"/>
   </joint>
 
   <joint name="$(arg prefix)right_front_wheel_joint" type="continuous">
     <parent link="$(arg prefix)base_link"/>
     <child link="$(arg prefix)right_front_wheel"/>
-    <origin xyz="0.3 -${wheel_separation} 0.15" rpy="1.57 0 0"/>
+    <origin xyz="0.3 -${wheel_separation} 0.15" rpy="-1.57 0 0"/>
     <axis xyz="0 0 1"/>
   </joint>
 
   <joint name="$(arg prefix)left_rear_wheel_joint" type="continuous">
     <parent link="$(arg prefix)base_link"/>
     <child link="$(arg prefix)left_rear_wheel"/>
-    <origin xyz="-0.3 ${wheel_separation} 0.15" rpy="1.57 0 0"/>
+    <origin xyz="-0.3 ${wheel_separation} 0.15" rpy="-1.57 0 0"/>
     <axis xyz="0 0 1"/>
   </joint>
 
   <joint name="$(arg prefix)right_rear_wheel_joint" type="continuous">
     <parent link="$(arg prefix)base_link"/>
     <child link="$(arg prefix)right_rear_wheel"/>
-    <origin xyz="-0.3 -${wheel_separation} 0.15" rpy="1.57 0 0"/>
+    <origin xyz="-0.3 -${wheel_separation} 0.15" rpy="-1.57 0 0"/>
     <axis xyz="0 0 1"/>
   </joint>
+
+  <gazebo reference="$(arg prefix)left_front_wheel">
+    <mu1>0.2</mu1> 
+    <mu2>0.2</mu2> 
+    <kp>1000000.0</kp>
+    <kd>1.0</kd>
+  </gazebo>
+
+  <gazebo reference="$(arg prefix)right_front_wheel">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <kp>1000000.0</kp>
+    <kd>1.0</kd>
+  </gazebo>
+
+  <gazebo reference="$(arg prefix)left_rear_wheel">
+    <mu1>0.2</mu1> 
+    <mu2>0.2</mu2> 
+    <kp>1000000.0</kp>
+    <kd>1.0</kd>
+  </gazebo>
+
+  <gazebo reference="$(arg prefix)right_rear_wheel">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <kp>1000000.0</kp>
+    <kd>1.0</kd>
+  </gazebo>
 
 </robot>

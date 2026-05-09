@@ -37,7 +37,7 @@ def generate_launch_description():
 
     robot_name = 'rover'
 
-    x_pos = 0.0
+    x_pos = -6
     y_pos = 0.0
 
     # =========================
@@ -58,6 +58,21 @@ def generate_launch_description():
             'gz_topic_name': f'/{robot_name}/scan',
             'ros_type_name': 'sensor_msgs/msg/LaserScan',
             'gz_type_name': 'gz.msgs.LaserScan',
+            'direction': 'GZ_TO_ROS'
+        },
+
+        {   'ros_topic_name': f'/{robot_name}/camera/image_raw', 
+            'gz_topic_name': f'/{robot_name}/camera/image_raw',
+            'ros_type_name': 'sensor_msgs/msg/Image', 
+            'gz_type_name': 'gz.msgs.Image',
+            'direction': 'GZ_TO_ROS'
+        },
+
+        {
+            'ros_topic_name': f'/{robot_name}/camera/camera_info',
+            'gz_topic_name': f'/{robot_name}/camera/camera_info',
+            'ros_type_name': 'sensor_msgs/msg/CameraInfo',
+            'gz_type_name': 'gz.msgs.CameraInfo',
             'direction': 'GZ_TO_ROS'
         },
 
@@ -156,7 +171,7 @@ def generate_launch_description():
         Node(
             package='ros_gz_sim',
             executable='create',
-            arguments=['-topic', 'robot_description', '-name', robot_name, '-x', '0', '-y', str(y_pos)]
+            arguments=['-topic', 'robot_description', '-name', robot_name, '-x', str(x_pos), '-y', str(y_pos)]
         ),
 
     ])

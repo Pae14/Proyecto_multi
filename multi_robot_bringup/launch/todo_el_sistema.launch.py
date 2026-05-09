@@ -23,6 +23,7 @@ def generate_launch_description():
             '/uav/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
             '/model/rover/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry',
             '/model/rover/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
+            '/model/rover/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
             '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
             f'/world/{world_name}/model/uav_cerberus/link/base_link/sensor/camera_front/image@sensor_msgs/msg/Image[gz.msgs.Image'
         ],
@@ -37,6 +38,7 @@ def generate_launch_description():
 
     vision = Node(package='uav_vision', executable='detector_objetos', output='screen')
     seguidor = Node(package='rover_navigation', executable='seguidor_dron.py', output='screen')
+    #wander = Node(package='rover_navigation', executable='wander.py', parameters=[{'robot': 'rover'}], output='screen')
     autonomo = Node(package='uav_vision', executable='dron_autonomo', output='screen')
 
     return LaunchDescription([
