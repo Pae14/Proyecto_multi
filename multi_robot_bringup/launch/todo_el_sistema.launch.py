@@ -42,7 +42,7 @@ def generate_launch_description():
     )
 
     vision = Node(package='uav_vision', executable='detector_objetos', output='screen', parameters=[{'use_sim_time': True}])
-    seguidor = Node(package='rover_navigation', executable='seguidor_dron.py', output='screen', parameters=[{'use_sim_time': True}])
+    seguidor = Node(package='rover_navigation', executable='seguidor_wander.py', output='screen', parameters=[{'use_sim_time': True}])
     autonomo = Node(package='uav_vision', executable='dron_autonomo', output='screen', parameters=[{'use_sim_time': True}])
 
     # SLAM para el Rover
@@ -98,10 +98,6 @@ def generate_launch_description():
         arguments=['0', '0', '0', '0', '0', '0', 'uav_map', 'world'],
         parameters=[{'use_sim_time': True}]
     )
-    vision = Node(package='uav_vision', executable='detector_objetos', output='screen')
-    seguidor = Node(package='rover_navigation', executable='seguidor_dron.py', output='screen')
-    #wander = Node(package='rover_navigation', executable='wander.py', parameters=[{'robot': 'rover'}], output='screen')
-    autonomo = Node(package='uav_vision', executable='dron_autonomo', output='screen')
 
     return LaunchDescription([
         gazebo,

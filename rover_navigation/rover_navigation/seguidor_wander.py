@@ -4,6 +4,8 @@ from rclpy.node import Node
 from geometry_msgs.msg import Point, Twist
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import LaserScan
+from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+import socket
 import math
 
 
@@ -19,25 +21,105 @@ class RoverHybridController(Node):
 
         # === PUB ===
         self.cmd_pub = self.create_publisher(Twist, '/rover/cmd_vel', 10)
+        self.gz_pub = self.create_publisher(JointTrajectory, '/rover/arm_controller/joint_trajectory', 10)
 
         # === STATE ===
         self.target = None
         self.pose = None
         self.scan = None
 
+        #===FLAGS PARA EL ROBOT STUDIO===
+        self.rs_conectado = False
+        self.objeto_disponible=False
+        self.abb_activo=False
+
+        #==CONFIGURACION DE SOCKET===
+        self.s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.ip="172.26.112.1"
+        self.puerto=5501
+        self._conectar_socket()
+
         self.timer = self.create_timer(0.1, self.control_loop)
+        #Leer el socket cada 10ms
+        self.timer_socket = self.create_timer(0.01, self.leer_socket)
 
         self.get_logger().info("Nodo híbrido rover iniciado")
+
+    def _conectar_socket(self):
+        try:
+            self.s.connect((self.ip, self.puerto))
+            self.s.settimeout(2.0) #2seg para intentar conectar con el robotstudio
+            saludo = self.s.recv(1024).decode()
+            self.get_logger().info(f"RobotStudio dice: {saludo}")
+            self.s.setblocking(False)
+            self.get_logger().info("Socket conectado. Esperando llegada al objeto...")
+        except Exception as e:
+            self.get_logger().error(f"Error de conexión: {e}")
+            self.rs_conectado=False
+            
 
     # CALLBACKS
     def target_callback(self, msg):
         self.target = msg
+        self.abb_activo=False
+        self.objeto_disponible=False
 
     def odom_callback(self, msg):
         self.pose = msg.pose.pose
 
     def lidar_callback(self, msg):
         self.scan = msg
+
+    def leer_socket(self):
+        if not self.abb_activo or not self.rs_conectado:
+            return
+        
+        try:
+            #Recibimos los del robotstudio datos
+            data = self.s.recv(1024).decode()
+            if data:
+                if "HECHO" in data: #si en el mensaje viene la cadena "HECHO"
+                    self.get_logger().info("Detectado fin de trayectoria")
+                    self.abb_activo=False
+                    self.objeto_disponible=False
+                    data_limpia = data.replace("HECHO", "") #limpiamos el HECHO para no perder la posición
+                    if data_limpia:
+                        self.publicar_articulaciones(data_limpia)
+                else:
+                    self.publicar_articulaciones(data) #publicar
+        except (BlockingIOError, socket.error):
+            pass
+        except Exception as e:
+            self.get_logger().error(f"Error en lectura: {e}")
+
+    def publicar_articulaciones(self, data):
+        #Instancia de mensaje de trayectoria
+        traj_msg = JointTrajectory()
+        joint_names= ['arm_joint_1', 'arm_joint_2', 'arm_joint_3', 'arm_joint_4', 'arm_joint_5', 'arm_joint_6']
+        traj_msg.joint_names = joint_names
+
+        #Creación del punto de trayectoria
+        point = JointTrajectoryPoint()
+
+        try:
+            angulos_grados = [float(x) for x in data.split(',')] #Paso de string a float
+            radianes = [x * (3.14159 / 180.0) for x in angulos_grados] #ABB usa grados y ROS radianes --> pasar a radianes
+
+            point.positions = radianes  #se define el punto objetivo
+            point.time_from_start.sec = 0
+            point.time_from_start.nanosec = 300000000 #0.3 seg para alcanzar la posicion
+
+            #Esto es para que la ejecución sea instantánea
+            traj_msg.header.stamp.sec = 0  
+            traj_msg.header.stamp.nanosec = 0
+            #Se añade el punto a la lista de puntos de la trayectoria
+            traj_msg.points = [point]
+
+            #envío del mensaje al controlador del brazo
+            self.gz_pub.publish(traj_msg)
+        
+        except ValueError as e:
+            self.get_logger().warn(f"Datos mal formateados: {data} → {e}")
 
     # evitar obstaculos
     def compute_avoidance(self):
@@ -72,7 +154,7 @@ class RoverHybridController(Node):
     # seguir el objetivo
     def compute_goal(self):
         if self.target is None or self.pose is None:
-            return 0.0, 0.0
+            return 0.0, 0.0, float('inf')
 
         dx = self.target.x - self.pose.position.x
         dy = self.target.y - self.pose.position.y
@@ -101,15 +183,31 @@ class RoverHybridController(Node):
             twist.linear.x = 0.2 * dist
             twist.angular.z = 1.0 * error
 
-        return twist.linear.x, twist.angular.z
+        return twist.linear.x, twist.angular.z, dist
 
     # FUSION CONTROL
     def control_loop(self):
         if self.target is None or self.pose is None:
             return
 
-        v_goal, w_goal = self.compute_goal()
+        v_goal, w_goal, dist = self.compute_goal()
         v_obs, w_obs = self.compute_avoidance()
+
+        if dist < 0.6 and not self.objeto_disponible and self.rs_conectado:
+            self.get_logger().info("¡Objetivo alcanzado! Enviando OBJETO_DISPONIBLE al brazo")
+            try:
+                self.s.setblocking(True)
+                self.s.send("OBJETO_DISPONIBLE".encode())
+                self.s.setblocking(False)
+                self.objeto_disponible = True
+                self.abb_activo = True
+            except Exception as e:
+                self.get_logger().error(f"Error enviando OBJETO_DISPONIBLE: {e}")
+                self.rs_conectado=False
+
+        if self.abb_activo:
+            self.cmd_pub.publish(Twist())
+            return
 
         twist = Twist()
 
