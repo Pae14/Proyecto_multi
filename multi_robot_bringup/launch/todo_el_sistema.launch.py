@@ -13,7 +13,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(os.path.join(pkg_bringup, 'launch', 'gazebo.launch.py'))
     )
 
-    # PUENTE MAESTRO: Corregido remapeo de TF y Topics
+    # Bridge Maestro: Forzamos el remapeo de la cámara del dron
     bridge_maestro = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -28,6 +28,7 @@ def generate_launch_description():
             '/uav/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
             '/rover/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
             '/model/uav_cerberus/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
+            # Cámara del dron con remapeo explícito
             f'/world/{world_name}/model/uav_cerberus/link/base_link/sensor/camera_front/image@sensor_msgs/msg/Image[gz.msgs.Image'
         ],
         remappings=[
@@ -45,59 +46,14 @@ def generate_launch_description():
     seguidor = Node(package='rover_navigation', executable='seguidor_dron.py', output='screen', parameters=[{'use_sim_time': True}])
     autonomo = Node(package='uav_vision', executable='dron_autonomo', output='screen', parameters=[{'use_sim_time': True}])
 
-    # SLAM para el Rover
-    slam_rover = Node(
-        package='slam_toolbox',
-        executable='sync_slam_toolbox_node',
-        name='slam_toolbox_rover',
-        output='screen',
-        parameters=[{
-            'use_sim_time': True,
-            'base_frame': 'rover/base_link',
-            'odom_frame': 'rover/odom',
-            'map_frame': 'map',
-            'scan_topic': '/rover/scan',
-            'mode': 'mapping'
-        }]
-    )
-
-    # SLAM para el Dron con remapeos de servicio completos
-    slam_uav = Node(
-        package='slam_toolbox',
-        executable='sync_slam_toolbox_node',
-        name='slam_toolbox_uav',
-        output='screen',
-        remappings=[
-            ('/map', '/uav/map'),
-            ('/map_metadata', '/uav/map_metadata'),
-            ('/slam_toolbox/graph_visualization', '/uav/graph_visualization'),
-            ('/slam_toolbox/get_map', '/uav/get_map'),
-            ('/slam_toolbox/dynamic_map', '/uav/dynamic_map'),
-        ],
-        parameters=[{
-            'use_sim_time': True,
-            'base_frame': 'uav_cerberus/base_link',
-            'odom_frame': 'world',
-            'map_frame': 'uav_map',
-            'scan_topic': '/uav/scan',
-            'mode': 'mapping'
-        }]
-    )
-
-    # Conector de mundos (Map -> UAV_Map -> World)
-    # Eliminamos world_to_map porque causa un conflicto de doble padre para 'world'
-    uav_map_to_map = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        arguments=['0', '0', '0', '0', '0', '0', 'map', 'uav_map'],
-        parameters=[{'use_sim_time': True}]
-    )
-
     return LaunchDescription([
         gazebo,
         bridge_maestro,
-        slam_rover,
-        slam_uav,
-        uav_map_to_map,
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            arguments=['0', '0', '0', '0', '0', '0', 'map', 'uav_map'],
+            parameters=[{'use_sim_time': True}]
+        ),
         TimerAction(period=5.0, actions=[vision, seguidor, autonomo]),
     ])
