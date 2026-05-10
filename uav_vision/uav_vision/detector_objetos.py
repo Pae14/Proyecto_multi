@@ -27,21 +27,18 @@ class DetectorDobleValidacion(Node):
         self.bridge = CvBridge()
         self.drone_pose = None
         
-        # Cargar Modelos desde la nueva carpeta de pesos del proyecto
-        # Rutas absolutas para garantizar la carga de los pesos
+        # Rutas absolutas para garantizar la carga
         path_yolo11 = '/home/paula/ros2_ws/src/proyecto_multi/uav_vision/weights/yolo11n-seg.pt'
+        path_best = '/home/paula/ros2_ws/src/proyecto_multi/uav_vision/weights/best.pt'
 
-        if os.path.exists(path_yolo11):
-            self.get_logger().info(f'📦 Cargando pesos desde: {path_yolo11}')
-            self.model_yolo11 = YOLO(path_yolo11)
-        else:
-            self.get_logger().error(f'❌ NO SE ENCONTRARON LOS PESOS EN: {path_yolo11}')
-            self.model_yolo11 = None
-        
-        path_best = os.path.join(base_path, 'weights', 'best.pt')
+        self.get_logger().info(f'📦 Buscando pesos en: {path_yolo11}')
+        self.model_yolo11 = YOLO(path_yolo11) if os.path.exists(path_yolo11) else None
         self.model_best = YOLO(path_best) if os.path.exists(path_best) else None
 
-        self.get_logger().info('✅ SISTEMA DOBLE ACTIVADO: YOLO11 (Ojeador) + BEST.PT (Experto)')
+        if not self.model_yolo11:
+            self.get_logger().error('❌ FALLO CRÍTICO: No se pudo cargar yolo11n-seg.pt')
+
+        self.get_logger().info('✅ SISTEMA DE VISIÓN INICIADO')
         self.window_name = "Vision_IA_Dron"
         cv2.namedWindow(self.window_name, cv2.WINDOW_NORMAL)
         self.processing = False
@@ -50,81 +47,75 @@ class DetectorDobleValidacion(Node):
         self.drone_pose = msg.pose.pose
 
     def listener_callback(self, data):
-        if self.processing or not self.model_yolo11 or not self.drone_pose: return
-            
         try:
-            self.processing = True
-            frame = self.bridge.imgmsg_to_cv2(data, 'bgr8')
-            h, w = frame.shape[:2]
+            # Convertir imagen
+            cv_image = self.bridge.imgmsg_to_cv2(data, 'bgr8')
             
-            # 1. YOLO11 busca sospechosos (Confianza muy baja para ser sensible)
-            res_11 = self.model_yolo11.predict(frame, conf=0.10, verbose=False)
-            if res_11[0].boxes:
-                box = res_11[0].boxes[0].xywh[0].cpu().numpy()
-                mx, my, dist = self.proyectar_a_mundo(box[0], box[1], w, h)
-                if mx is not None:
-                    v_point = Point()
-                    v_point.x, v_point.y = float(mx), float(my)
-                    self.verify_pub.publish(v_point)
+            # Si ya estamos procesando un frame o no hay modelo, solo mostramos la imagen actual
+            if self.processing or not self.model_yolo11:
+                cv2.imshow(self.window_name, cv_image)
+                cv2.waitKey(1)
+                return
 
-            # 2. BEST.PT confirma peligros
-            res_best = self.model_best.predict(frame, conf=0.45, verbose=False)
-            if res_best[0].boxes:
-                for box in res_best[0].boxes:
-                    label = self.model_best.names[int(box.cls[0])]
-                    if label in ['barrel', 'backpack', 'toolbox', 'airplane']:
-                        b = box.xywh[0].cpu().numpy()
-                        mx, my, dist = self.proyectar_a_mundo(b[0], b[1], w, h)
-                        if mx is not None:
-                            target = Point()
-                            target.x, target.y = float(mx), float(my)
-                            self.target_pub.publish(target)
-                            self.get_logger().info(f'🚨 PELIGRO [{label}] DETECTADO A {dist:.1f}m')
+            self.processing = True
             
-            cv2.imshow(self.window_name, res_best[0].plot())
+            # Solo procesamos IA si tenemos la posición del dron
+            if self.drone_pose:
+                h, w = cv_image.shape[:2]
+                
+                # 1. YOLO11 busca sospechosos
+                res_11 = self.model_yolo11.predict(cv_image, conf=0.10, verbose=False)
+                if res_11[0].boxes:
+                    box = res_11[0].boxes[0].xywh[0].cpu().numpy()
+                    mx, my, dist = self.proyectar_a_mundo(box[0], box[1], w, h)
+                    if mx is not None:
+                        v_point = Point()
+                        v_point.x, v_point.y = float(mx), float(my)
+                        self.verify_pub.publish(v_point)
+
+                # 2. BEST.PT confirma peligros
+                if self.model_best:
+                    res_best = self.model_best.predict(cv_image, conf=0.45, verbose=False)
+                    cv_image = res_best[0].plot()
+                    if res_best[0].boxes:
+                        for box in res_best[0].boxes:
+                            label = self.model_best.names[int(box.cls[0])]
+                            if label in ['barrel', 'backpack', 'toolbox', 'airplane']:
+                                b = box.xywh[0].cpu().numpy()
+                                mx, my, dist = self.proyectar_a_mundo(b[0], b[1], w, h)
+                                if mx is not None:
+                                    target = Point()
+                                    target.x, target.y = float(mx), float(my)
+                                    self.target_pub.publish(target)
+                                    self.get_logger().info(f'🚨 PELIGRO [{label}] DETECTADO')
+                else:
+                    cv_image = res_11[0].plot()
+
+            # MOSTRAR SIEMPRE LA VENTANA
+            cv2.imshow(self.window_name, cv_image)
             cv2.waitKey(1)
+            
         except Exception as e:
-            self.get_logger().error(f'Error: {e}')
+            self.get_logger().error(f'Error en el nodo de visión: {e}')
         finally:
             self.processing = False
 
     def proyectar_a_mundo(self, u, v, w, h):
-        # Focal para FOV ~70 deg
+        if not self.drone_pose: return None, None, 0
         f = w / (2 * np.tan(np.deg2rad(35))) 
-        
-        # Altura (dz): Usamos odometría, pero si es < 0.3 forzamos 0.8 para el cálculo
         dz = max(0.8, self.drone_pose.position.z)
-        
-        # Coordenadas relativas al centro de imagen
-        xc = u - w/2
-        yc = v - h/2  # Si yc > 0, el objeto está en la mitad inferior (en el suelo)
-        
-        # Ángulo de inclinación de la cámara (tilt): 15 grados hacia abajo
+        xc, yc = u - w/2, v - h/2
         tilt = np.deg2rad(15)
-        
-        # Ray-casting simplificado para cámara frontal inclinada
-        # rz es la componente vertical del rayo en el mundo
-        # rz = -f*sin(tilt) - yc*cos(tilt)
         rz = -f * math.sin(tilt) - yc * math.cos(tilt)
-        
-        if rz >= -0.1: return None, None, 0 # Apunta al cielo o horizonte
-        
-        # Factor de escala para llegar al suelo (z=0)
+        if rz >= -0.1: return None, None, 0 
         k = -dz / rz
-        
-        # Coordenadas en el cuerpo del dron (X-adelante, Y-izq)
         rel_x = k * (f * math.cos(tilt) - yc * math.sin(tilt))
         rel_y = k * (-xc)
-        
         dist = math.sqrt(rel_x**2 + rel_y**2)
-        
-        # Rotar al mapa global (Yaw del dron)
         q = self.drone_pose.orientation
         yaw = math.atan2(2*(q.w*q.z + q.x*q.y), 1 - 2*(q.y*q.y + q.z*q.z))
-        
         mx = self.drone_pose.position.x + (rel_x * math.cos(yaw) - rel_y * math.sin(yaw))
         my = self.drone_pose.position.y + (rel_x * math.sin(yaw) + rel_y * math.cos(yaw))
-        
         return mx, my, dist
 
 def main(args=None):
