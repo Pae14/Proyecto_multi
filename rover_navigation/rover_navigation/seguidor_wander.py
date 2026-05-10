@@ -52,6 +52,7 @@ class RoverHybridController(Node):
             saludo = self.s.recv(1024).decode()
             self.get_logger().info(f"RobotStudio dice: {saludo}")
             self.s.setblocking(False)
+            self.rs_conectado=True
             self.get_logger().info("Socket conectado. Esperando llegada al objeto...")
         except Exception as e:
             self.get_logger().error(f"Error de conexión: {e}")
