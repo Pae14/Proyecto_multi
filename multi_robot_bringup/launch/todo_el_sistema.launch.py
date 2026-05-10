@@ -85,19 +85,14 @@ def generate_launch_description():
     )
 
     # Conector de mundos (Map -> UAV_Map -> World)
-    world_to_map = Node(
+    # Eliminamos world_to_map porque causa un conflicto de doble padre para 'world'
+    uav_map_to_map = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
-        arguments=['0', '0', '0', '0', '0', '0', 'map', 'world'],
+        arguments=['0', '0', '0', '0', '0', '0', 'map', 'uav_map'],
         parameters=[{'use_sim_time': True}]
     )
-    
-    uav_map_to_world = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        arguments=['0', '0', '0', '0', '0', '0', 'uav_map', 'world'],
-        parameters=[{'use_sim_time': True}]
-    )
+
     vision = Node(package='uav_vision', executable='detector_objetos', output='screen')
     seguidor = Node(package='rover_navigation', executable='seguidor_dron.py', output='screen')
     #wander = Node(package='rover_navigation', executable='wander.py', parameters=[{'robot': 'rover'}], output='screen')
@@ -108,7 +103,6 @@ def generate_launch_description():
         bridge_maestro,
         slam_rover,
         slam_uav,
-        world_to_map,
-        uav_map_to_world,
+        uav_map_to_map,
         TimerAction(period=5.0, actions=[vision, seguidor, autonomo]),
     ])
