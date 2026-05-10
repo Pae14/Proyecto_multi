@@ -109,7 +109,7 @@ class DetectorDobleValidacion(Node):
         rz = -f * math.sin(tilt) - yc * math.cos(tilt)
         if rz >= -0.1: return None, None, 0 
         k = -dz / rz
-        rel_x = k * (f * math.cos(tilt) - yc * math.sin(tilt))
+        rel_x = k * (f * math.cos(tilt) - yc * math.sin(tilt)) + 0.25
         rel_y = k * (-xc)
         dist = math.sqrt(rel_x**2 + rel_y**2)
         q = self.drone_pose.orientation
