@@ -163,7 +163,7 @@ def generate_launch_description():
             executable='robot_state_publisher',
             parameters=[{
                 'robot_description': robot_description,
-                'use_sim_time': True,
+                'use_sim_time': False,
                 'publish_frequency': 50.0,
             }]
         ),
