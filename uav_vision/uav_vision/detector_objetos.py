@@ -6,6 +6,8 @@ import cv2
 import numpy as np
 import os
 import math
+from ament_index_python.packages import get_package_share_directory
+
 try:
     from ultralytics import YOLO
 except ImportError:
@@ -27,13 +29,19 @@ class DetectorDobleValidacion(Node):
         self.bridge = CvBridge()
         self.drone_pose = None
         
-        # Obtener la ruta base del paquete (subiendo un nivel desde uav_vision/uav_vision)
-        package_base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        
-        path_yolo11 = os.path.join(package_base_path, 'weights', 'yolo11n-seg.pt')
-        path_best = os.path.join(package_base_path, 'weights', 'best.pt')
+        # Obtener la ruta de los pesos usando el directorio compartido del paquete
+        try:
+            package_share_directory = get_package_share_directory('uav_vision')
+            path_yolo11 = os.path.join(package_share_directory, 'weights', 'yolo11n-seg.pt')
+            path_best = os.path.join(package_share_directory, 'weights', 'best.pt')
+        except Exception:
+            # Fallback por si no está instalado (uso directo en src)
+            self.get_logger().warn('Paquete no encontrado en install, buscando en ruta local...')
+            package_base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            path_yolo11 = os.path.join(package_base_path, 'weights', 'yolo11n-seg.pt')
+            path_best = os.path.join(package_base_path, 'weights', 'best.pt')
 
-        self.get_logger().info(f'📦 Buscando pesos en: {path_yolo11}')
+        self.get_logger().info(f'📦 Cargando pesos desde: {path_yolo11}')
         self.model_yolo11 = YOLO(path_yolo11) if os.path.exists(path_yolo11) else None
         self.model_best = YOLO(path_best) if os.path.exists(path_best) else None
 
