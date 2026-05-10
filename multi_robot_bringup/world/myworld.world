@@ -33,7 +33,7 @@
       <uri>https://fuel.gazebosim.org/1.0/antonytodo/models/CERBERUS_M100_SENSOR_CONFIG_1</uri>
       <name>uav_cerberus</name>
       <static>false</static>
-      <pose>0 10 0.8 0 0 0</pose>
+      <pose>-5 10 0.8 0 0 0</pose>
       <plugin filename="gz-sim-velocity-control-system" name="gz::sim::systems::VelocityControl">
         <topic>/uav/cmd_vel</topic>
       </plugin>
@@ -44,7 +44,7 @@
     </include>
     
     <!-- OBJETOS PARA EL DATASET (Fuera de las casetas) -->
-    <include><uri>model://hazardous_barrel</uri><name>barril_suelo</name><pose>8 9 0.4 0 0 0</pose></include>
+    <include><uri>model://hazardous_barrel</uri><name>barril_suelo</name><pose>2 9 0.4 0 0 0</pose></include>
 
   
   </world>

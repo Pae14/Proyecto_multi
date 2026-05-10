@@ -56,6 +56,15 @@ class DetectorDobleValidacion(Node):
     def odom_callback(self, msg):
         self.drone_pose = msg.pose.pose
 
+    def target_callback(self, msg):
+        if self.pose is not None and self.target is not None:
+            dx = self.target.x - self.pose.position.x
+            dy = self.target.y - self.pose.position.y
+            dist_actual = math.sqrt(dx**2 + dy**2)
+            if dist_actual < 2.5:  # congelar target dentro de 2.5m
+                return
+        self.target = msg
+
     def listener_callback(self, data):
         try:
             # Convertir imagen
@@ -119,7 +128,7 @@ class DetectorDobleValidacion(Node):
         rz = -f * math.sin(tilt) - yc * math.cos(tilt)
         if rz >= -0.1: return None, None, 0 
         k = -dz / rz
-        rel_x = k * (f * math.cos(tilt) - yc * math.sin(tilt)) + 0.25
+        rel_x = k * (f * math.cos(tilt) - yc * math.sin(tilt)) + 0.8
         rel_y = k * (-xc)
         dist = math.sqrt(rel_x**2 + rel_y**2)
         q = self.drone_pose.orientation
