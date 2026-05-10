@@ -27,9 +27,11 @@ class DetectorDobleValidacion(Node):
         self.bridge = CvBridge()
         self.drone_pose = None
         
-        # Rutas absolutas para garantizar la carga
-        path_yolo11 = '/home/paula/ros2_ws/src/proyecto_multi/uav_vision/weights/yolo11n-seg.pt'
-        path_best = '/home/paula/ros2_ws/src/proyecto_multi/uav_vision/weights/best.pt'
+        # Obtener la ruta base del paquete (subiendo un nivel desde uav_vision/uav_vision)
+        package_base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        
+        path_yolo11 = os.path.join(package_base_path, 'weights', 'yolo11n-seg.pt')
+        path_best = os.path.join(package_base_path, 'weights', 'best.pt')
 
         self.get_logger().info(f'📦 Buscando pesos en: {path_yolo11}')
         self.model_yolo11 = YOLO(path_yolo11) if os.path.exists(path_yolo11) else None

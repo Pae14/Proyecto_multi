@@ -14,6 +14,7 @@ setup(
         ('share/' + package_name, ['package.xml']),
         # ¡Esta línea es clave para que ROS encuentre vision.launch.py!
         (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
+        (os.path.join('share', package_name, 'weights'), glob('weights/*.pt')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
