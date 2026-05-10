@@ -93,11 +93,6 @@ def generate_launch_description():
         parameters=[{'use_sim_time': True}]
     )
 
-    vision = Node(package='uav_vision', executable='detector_objetos', output='screen')
-    seguidor = Node(package='rover_navigation', executable='seguidor_dron.py', output='screen')
-    #wander = Node(package='rover_navigation', executable='wander.py', parameters=[{'robot': 'rover'}], output='screen')
-    autonomo = Node(package='uav_vision', executable='dron_autonomo', output='screen')
-
     return LaunchDescription([
         gazebo,
         bridge_maestro,
