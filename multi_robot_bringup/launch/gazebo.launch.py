@@ -19,6 +19,17 @@ def generate_launch_description():
     # GAZEBO RESOURCE PATH
     # =========================
 
+    # Añadir los paths de recursos de Gazebo
+    # Gazebo Sim busca modelos en GZ_SIM_RESOURCE_PATH
+    # Necesitamos incluir las carpetas 'share' de nuestro workspace para que encuentre las mallas
+    
+    extra_gz_resource_paths = []
+    if 'AMENT_PREFIX_PATH' in os.environ:
+        for path in os.environ['AMENT_PREFIX_PATH'].split(':'):
+            share_path = os.path.join(path, 'share')
+            if os.path.exists(share_path):
+                extra_gz_resource_paths.append(share_path)
+
     aws_models_paths = [
         os.path.join(pkg_path, 'ThirdParty/aws-robomaker-racetrack-world/models'),
         os.path.join(pkg_path, 'ThirdParty/aws-robomaker-small-warehouse-world/models'),
@@ -27,7 +38,7 @@ def generate_launch_description():
         os.path.join(pkg_path, 'models')
     ]
 
-    gz_resource_path = ':'.join(aws_models_paths)
+    gz_resource_path = ':'.join(aws_models_paths + extra_gz_resource_paths)
 
     world_path = os.path.join(pkg_path, 'world', 'myworld.world')
 
