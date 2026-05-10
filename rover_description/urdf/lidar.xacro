@@ -5,7 +5,7 @@
   <xacro:property name="lidar_length" value="0.04"/>
   
       <joint name="$(arg prefix)laser_joint" type="fixed"> <parent link="$(arg prefix)base_link"/>
-        <child link="$(arg prefix)lidar_link"/> <origin xyz="0 0 0.45" rpy="0 0 0"/>
+        <child link="$(arg prefix)lidar_link"/> <origin xyz="0.25 0 0.45" rpy="0 0 0"/>
       </joint>
       
       <link name="$(arg prefix)lidar_link">
