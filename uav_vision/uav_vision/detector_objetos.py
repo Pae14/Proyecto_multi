@@ -45,6 +45,12 @@ class DetectorDobleValidacion(Node):
         self.model_yolo11 = YOLO(path_yolo11) if os.path.exists(path_yolo11) else None
         self.model_best = YOLO(path_best) if os.path.exists(path_best) else None
 
+        if self.model_best:
+            # Asegurar nombres de clase consistentes con el entrenamiento
+            self.model_best.model.names[0] = "backpack"
+            self.model_best.model.names[1] = "toolbox"
+            self.model_best.model.names[2] = "dump"
+
         if not self.model_yolo11:
             self.get_logger().error('❌ FALLO CRÍTICO: No se pudo cargar yolo11n-seg.pt')
 
@@ -90,7 +96,7 @@ class DetectorDobleValidacion(Node):
                     if res_best[0].boxes:
                         for box in res_best[0].boxes:
                             label = self.model_best.names[int(box.cls[0])]
-                            if label in ['barrel', 'backpack', 'toolbox', 'airplane']:
+                            if label in ['dump', 'backpack', 'toolbox']:
                                 b = box.xywh[0].cpu().numpy()
                                 mx, my, dist = self.proyectar_a_mundo(b[0], b[1], w, h)
                                 if mx is not None:

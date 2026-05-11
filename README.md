@@ -11,6 +11,7 @@ Este proyecto contiene la infraestructura necesaria para la simulación y contro
     - Configurar la cámara RGB-D del dron en Gazebo.
     - Diseñar y entrenar la red neuronal para filtrado de ruido y detección de objetivos.
     - Programar el nodo de visión para traducir detección de píxeles a coordenadas 3D.
+    - Comunicación y movimiento Dron.
 
 ### 👩‍💻 Rol 2: ROS y Navegación 
 **Misión:** Control de Gazebo y gestionar la movilidad del Rover.
