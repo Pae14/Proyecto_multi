@@ -34,7 +34,7 @@
           <!-- Intentamos cargar la textura, pero el color anterior servirá de base si falla -->
           <pbr>
             <metal>
-              <albedo_map>materials/textures/sand.jpg</albedo_map>
+              <albedo_map>materials/textures/industrial2.jpg</albedo_map>
             </metal>
           </pbr>
         </material>
