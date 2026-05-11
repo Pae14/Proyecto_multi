@@ -8,10 +8,9 @@ import os
 import math
 from ament_index_python.packages import get_package_share_directory
 
-try:
-    from ultralytics import YOLO
-except ImportError:
-    YOLO = None
+
+from ultralytics import YOLO
+
 
 from geometry_msgs.msg import Point
 from nav_msgs.msg import Odometry
