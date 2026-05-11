@@ -33,6 +33,8 @@ class RoverHybridController(Node):
         self.objeto_disponible=False
         self.abb_activo=False
 
+        self.buffer_socket = ""
+
         #==CONFIGURACION DE SOCKET===
         self.s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.ip="172.26.112.1"
@@ -61,12 +63,14 @@ class RoverHybridController(Node):
 
     # CALLBACKS
     def target_callback(self, msg):
-        # Si ya tenemos un objetivo, o el brazo está trabajando, ignoramos nuevas detecciones
-        if self.abb_activo or self.objeto_disponible or self.target is not None:
+        if self.abb_activo:
             return
         
-        self.get_logger().info(f"🎯 OBJETIVO FIJADO: X={msg.x:.2f}, Y={msg.y:.2f}")
-        self.target = msg
+        # Si el target es nuevo o el Rover estaba parado, lo fijamos
+        if self.target is None:
+            self.get_logger().info(f"🎯 NUEVO OBJETIVO RECIBIDO: X={msg.x:.2f}, Y={msg.y:.2f}")
+            self.target = msg
+            self.objeto_disponible = False
 
 
     def odom_callback(self, msg):
@@ -81,17 +85,24 @@ class RoverHybridController(Node):
         
         try:
             #Recibimos los del robotstudio datos
-            data = self.s.recv(1024).decode()
-            if data:
-                if "HECHO" in data: #si en el mensaje viene la cadena "HECHO"
+            chunk = self.s.recv(1024).decode()
+            self.buffer_socket += chunk
+
+            while '\n' in self.buffer_socket:
+                linea, self.buffer_socket = self.buffer_socket.split('\n', 1)
+                linea = linea.strip()
+                if not linea:
+                    continue
+                if "HECHO" in linea: #si en el mensaje viene la cadena "HECHO"
                     self.get_logger().info("Detectado fin de trayectoria")
                     self.abb_activo=False
                     self.objeto_disponible=False
-                    data_limpia = data.replace("HECHO", "") #limpiamos el HECHO para no perder la posición
+                    self.target=None
+                    data_limpia = linea.replace("HECHO", "") #limpiamos el HECHO para no perder la posición
                     if data_limpia:
                         self.publicar_articulaciones(data_limpia)
                 else:
-                    self.publicar_articulaciones(data) #publicar
+                    self.publicar_articulaciones(linea) #publicar
         except (BlockingIOError, socket.error):
             pass
         except Exception as e:

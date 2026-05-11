@@ -8,25 +8,27 @@ from launch.substitutions import Command
 from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
-    pkg_abb = get_package_share_directory('abb_irb120_description')
-    
-    # --- 1. PROCESADO DEL URDF ---
-    # Usamos el .xacro completo, no el _macro (o asegúrate de que el macro sea el top-level)
-    # Si tienes un archivo llamado 'irb120_3_58.urdf.xacro' úsalo aquí
-    xacro_file = os.path.join(pkg_abb, 'urdf', 'abb.xacro')
+    # Mensaje de confirmación en consola
+    print("\n" + "!"*60)
+    print(">>> INICIANDO VERSION LIMPIA - SOLO PAQUETE 'PRUEBA' <<<")
+    print("!"*60 + "\n")
 
+    pkg_abb_description = get_package_share_directory('abb_irb120_description')
+    
+    # Procesado de URDF
+    xacro_file = os.path.join(pkg_abb_description, 'urdf', 'abb.xacro')
     robot_description = ParameterValue(
         Command(['xacro ', xacro_file]), value_type=str
     )
 
-    # --- 2. NODOS BÁSICOS ---
+    # Nodo de Estado
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         parameters=[{'robot_description': robot_description, 'use_sim_time': True}]
     )
 
-    # --- 3. GAZEBO (Mundo vacío) ---
+    # Simulación
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')]),
@@ -40,16 +42,14 @@ def generate_launch_description():
         output='screen'
     )
 
-    # --- 4. BRIDGE (VITAL PARA EL RELOJ) ---
-    bridge = Node(
+    clock_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=['/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'],
         parameters=[{'use_sim_time': True}]
     )
 
-    # --- 5. CONTROLADORES ---
-    # Nota: Sin namespace, cargamos directamente
+    # Controladores
     load_joint_state = TimerAction(
         period=5.0,
         actions=[Node(
@@ -60,7 +60,7 @@ def generate_launch_description():
     )
 
     load_arm_controller = TimerAction(
-        period=7.0,
+        period=8.0,
         actions=[Node(
             package="controller_manager",
             executable="spawner",
@@ -69,12 +69,11 @@ def generate_launch_description():
     )
 
 
-
     return LaunchDescription([
-        bridge, # Añadido
+        clock_bridge,
         robot_state_publisher,
         gazebo,
         spawn_robot,
         load_joint_state,
         load_arm_controller,
-    ])
+        ])
