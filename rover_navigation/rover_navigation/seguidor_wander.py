@@ -61,9 +61,13 @@ class RoverHybridController(Node):
 
     # CALLBACKS
     def target_callback(self, msg):
+        # Si ya tenemos un objetivo, o el brazo está trabajando, ignoramos nuevas detecciones
+        if self.abb_activo or self.objeto_disponible or self.target is not None:
+            return
+        
+        self.get_logger().info(f"🎯 OBJETIVO FIJADO: X={msg.x:.2f}, Y={msg.y:.2f}")
         self.target = msg
-        self.abb_activo=False
-        self.objeto_disponible=False
+
 
     def odom_callback(self, msg):
         self.pose = msg.pose.pose
@@ -108,7 +112,7 @@ class RoverHybridController(Node):
 
             point.positions = radianes  #se define el punto objetivo
             point.time_from_start.sec = 0
-            point.time_from_start.nanosec = 300000000 #0.3 seg para alcanzar la posicion
+            point.time_from_start.nanosec = 100000000 #0.1 seg para alcanzar la posicion
 
             #Esto es para que la ejecución sea instantánea
             traj_msg.header.stamp.sec = 0  
@@ -197,7 +201,7 @@ class RoverHybridController(Node):
             throttle_duration_sec=1.0
         )
 
-        if dist < 0.2 and not self.objeto_disponible and self.rs_conectado:
+        if dist < 0.5 and not self.objeto_disponible and self.rs_conectado:
             self.get_logger().info("¡Objetivo alcanzado! Enviando OBJETO_DISPONIBLE al brazo")
             try:
                 self.s.setblocking(True)
@@ -205,6 +209,7 @@ class RoverHybridController(Node):
                 self.s.setblocking(False)
                 self.objeto_disponible = True
                 self.abb_activo = True
+                self.target=None
             except Exception as e:
                 self.get_logger().error(f"Error enviando OBJETO_DISPONIBLE: {e}")
                 self.rs_conectado=False
@@ -224,13 +229,6 @@ class RoverHybridController(Node):
             twist.linear.x = max(min(v_goal, 2.0), -0.3)
             twist.angular.z = max(min(w_goal, 2.0), -2.0)
 
-        # FUSIÓN 
-        twist.linear.x = v_goal + v_obs * 1.2
-        twist.angular.z = w_goal + w_obs * 2.0
-
-        # saturación de seguridad
-        twist.linear.x = max(min(twist.linear.x, 3.0), -0.5)
-        twist.angular.z = max(min(twist.angular.z, 2.0), -2.0)
 
         self.cmd_pub.publish(twist)
 

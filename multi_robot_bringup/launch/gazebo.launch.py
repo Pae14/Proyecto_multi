@@ -18,10 +18,6 @@ def generate_launch_description():
     # =========================
     # GAZEBO RESOURCE PATH
     # =========================
-
-    # Añadir los paths de recursos de Gazebo
-    # Gazebo Sim busca modelos en GZ_SIM_RESOURCE_PATH
-    # Necesitamos incluir las carpetas 'share' de nuestro workspace para que encuentre las mallas
     
     extra_gz_resource_paths = []
     if 'AMENT_PREFIX_PATH' in os.environ:
@@ -132,14 +128,12 @@ def generate_launch_description():
 
     nodes_list = []
 
-    # Gazebo
     nodes_list.append(
         SetEnvironmentVariable(
             name='GZ_SIM_RESOURCE_PATH',
             value=gz_resource_path
         )
     )
-    #este es para que encuentre la libreria del ros2 control
     nodes_list.append(
         SetEnvironmentVariable(
             name='GZ_SIM_SYSTEM_PLUGIN_PATH',
@@ -153,7 +147,7 @@ def generate_launch_description():
             output='screen'
         )
     )
-    robot_description = ParameterValue( #cargar el rover
+    robot_description = ParameterValue(
         Command([
             'xacro ',
             PathJoinSubstitution([
@@ -165,7 +159,6 @@ def generate_launch_description():
         ]),
         value_type=str
     )
-    # Robot group
     robot_group = GroupAction([
 
         PushRosNamespace(robot_name),
@@ -194,7 +187,6 @@ def generate_launch_description():
             arguments=['0', str(y_pos), '0', '0', '0', '0', 'map', f'{robot_name}/odom']
         )
     )
-    # Bridge
     nodes_list.append(
         Node(
             package='ros_gz_bridge',
@@ -210,7 +202,7 @@ def generate_launch_description():
         )
     )
     load_joint_state_broadcaster = TimerAction(
-        period=15.0, 
+        period=20.0, 
         actions=[
             Node(
                 package="controller_manager",
@@ -220,9 +212,8 @@ def generate_launch_description():
         ]
     )
 
-    # 2. Spawner del Arm Controller con retraso (un poco más que el anterior)
     load_arm_controller = TimerAction(
-        period=18.0,
+        period=25.0,
         actions=[
             Node(
                 package="controller_manager",

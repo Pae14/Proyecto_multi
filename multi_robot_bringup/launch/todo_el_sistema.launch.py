@@ -13,7 +13,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(os.path.join(pkg_bringup, 'launch', 'gazebo.launch.py'))
     )
 
-    # Bridge Maestro: Forzamos el remapeo de la cámara del dron
+    # Bridge Maestro: EXCLUSIVO DRON Y COORDINACIÓN
     bridge_maestro = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -28,7 +28,6 @@ def generate_launch_description():
             '/uav/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
             '/rover/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
             '/model/uav_cerberus/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
-            # Cámara del dron con remapeo explícito
             f'/world/{world_name}/model/uav_cerberus/link/base_link/sensor/camera_front/image@sensor_msgs/msg/Image[gz.msgs.Image'
         ],
         remappings=[
@@ -43,8 +42,8 @@ def generate_launch_description():
     )
 
     vision = Node(package='uav_vision', executable='detector_objetos', output='screen', parameters=[{'use_sim_time': True}])
-    seguidor = Node(package='rover_navigation', executable='seguidor_wander.py', output='screen', parameters=[{'use_sim_time': True}])
-    autonomo = Node(package='uav_vision', executable='dron_autonomo', output='screen', parameters=[{'use_sim_time': True}])
+    seguidor = Node(package='rover_navigation', executable='seguidor_dron.py', output='screen', parameters=[{'use_sim_time': True}])
+    autonomo = Node(package='uav_vision', executable='dron_wander', output='screen', parameters=[{'use_sim_time': True}])
 
     return LaunchDescription([
         gazebo,

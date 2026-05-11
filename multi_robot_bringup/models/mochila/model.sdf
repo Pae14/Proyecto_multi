@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+  <model name="mochila">
+    <static>true</static>
+    <link name="link">
+      <collision name="collision">
+        <pose>0 0 0.25 0 0 0</pose>
+        <geometry><box><size>0.4 0.2 0.5</size></box></geometry>
+      </collision>
+      <visual name="visual">
+        <geometry><mesh><uri>model://mochila/meshes/Backpack.dae</uri></mesh></geometry>
+        <material>
+          <diffuse>1 1 1 1</diffuse>
+          <pbr><metal><albedo_map>model://mochila/meshes/Backpack.png</albedo_map></metal></pbr>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

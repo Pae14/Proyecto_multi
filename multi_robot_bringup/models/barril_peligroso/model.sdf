@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+  <model name="barril_peligroso">
+    <static>true</static>
+    <link name="link">
+      <collision name="collision">
+        <pose>0 0 0.4 0 0 0</pose>
+        <geometry><cylinder><radius>0.3</radius><length>0.8</length></cylinder></geometry>
+      </collision>
+      <visual name="visual">
+        <pose>0 0 0.4 0 0 0</pose>
+        <geometry><cylinder><radius>0.3</radius><length>0.8</length></cylinder></geometry>
+        <material>
+          <diffuse>1 1 1 1</diffuse>
+          <pbr><metal><albedo_map>model://barril_peligroso/meshes/barrel_texture.png</albedo_map></metal></pbr>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

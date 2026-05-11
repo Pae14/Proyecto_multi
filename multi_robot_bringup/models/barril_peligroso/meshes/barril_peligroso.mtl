@@ -1,0 +1,4 @@
+newmtl BarrelMaterial
+ka 1.000 1.000 1.000
+kd 1.000 1.000 1.000
+map_Kd barrel_texture.png

@@ -44,7 +44,9 @@
     </include>
     
     <!-- OBJETOS PARA EL DATASET (Fuera de las casetas) -->
-    <include><uri>model://hazardous_barrel</uri><name>barril_suelo</name><pose>2 9 0.4 0 0 0</pose></include>
+    <include><uri>model://barril_peligroso</uri><name>barril_entrenamiento</name><pose>2 15 0 0 0 0</pose></include>
+    <include><uri>model://mochila</uri><name>mochila_1</name><pose>3 16 0.2 0 0 0</pose></include>
+    <include><uri>model://caja_herramientas</uri><name>caja_1</name><pose>1 17 0.2 0 0 0</pose></include>
 
   
   </world>
