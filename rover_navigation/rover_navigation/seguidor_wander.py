@@ -52,6 +52,7 @@ class RoverHybridController(Node):
             saludo = self.s.recv(1024).decode()
             self.get_logger().info(f"RobotStudio dice: {saludo}")
             self.s.setblocking(False)
+            self.rs_conectado=True
             self.get_logger().info("Socket conectado. Esperando llegada al objeto...")
         except Exception as e:
             self.get_logger().error(f"Error de conexión: {e}")
@@ -128,28 +129,17 @@ class RoverHybridController(Node):
 
         ranges = list(self.scan.ranges)
 
-        front = [r for r in ranges[0:30] + ranges[330:359] if 0.05 < r < 10.0]
-        left  = [r for r in ranges[45:135] if 0.05 < r < 10.0]
-        right = [r for r in ranges[225:315] if 0.05 < r < 10.0]
-
+        front = [r for r in ranges[0:30] + ranges[330:359] if 0.3 < r < 5.0]
+        left  = [r for r in ranges[45:135] if 0.3 < r < 5.0]
+        right = [r for r in ranges[225:315] if 0.3 < r < 5.0]
         d_front = min(front) if front else 10.0
-        d_left  = min(left) if left else 10.0
-        d_right = min(right) if right else 10.0
 
-        twist = Twist()
+        if d_front < 1.0: 
+            d_left  = min(left)  if left  else 10.0
+            d_right = min(right) if right else 10.0
+            return -0.1, 1.0 if d_left > d_right else -1.0
 
-        # Obstáculo frontal fuerte → prioridad alta
-        if d_front < 1.0:
-            twist.linear.x = -0.2
-            twist.angular.z = 1.5 if d_left > d_right else -1.5
-        elif d_front < 1.5:
-            twist.linear.x = 0.0
-            twist.angular.z = 0.8 if d_left > d_right else -0.8
-        else:
-            twist.linear.x = 0.0
-            twist.angular.z = 0.0
-
-        return twist.linear.x, twist.angular.z
+        return 0.0, 0.0
 
     # seguir el objetivo
     def compute_goal(self):
@@ -176,24 +166,38 @@ class RoverHybridController(Node):
 
         twist = Twist()
 
-        if dist > 0.6:
-            twist.angular.z = max(min(1.2 * error, 1.2), -1.2)
-            twist.linear.x = 1.5
-        else:
-            twist.linear.x = 0.2 * dist
-            twist.angular.z = 1.0 * error
+        if dist > 0.01:
+            # Si está girando mucho → avanza lento
+            if abs(error) > 0.8:
+                return 0.0, max(min(1.5 * error, 1.5), -1.5), dist
+            else:
+                return 1.5, max(min(1.0 * error, 1.0), -1.0), dist
 
-        return twist.linear.x, twist.angular.z, dist
+        else:
+            return 0.2 * dist, 0.5 * error, dist
+
+        
 
     # FUSION CONTROL
     def control_loop(self):
-        if self.target is None or self.pose is None:
+        if self.target is None:
+            self.get_logger().warn("Sin target", throttle_duration_sec=3.0)
+            return
+        if self.pose is None:
+            self.get_logger().warn("Sin pose/odom", throttle_duration_sec=3.0)
             return
 
         v_goal, w_goal, dist = self.compute_goal()
         v_obs, w_obs = self.compute_avoidance()
 
-        if dist < 0.6 and not self.objeto_disponible and self.rs_conectado:
+        self.get_logger().info(
+            f"Rover: [{self.pose.position.x:.2f}, {self.pose.position.y:.2f}] "
+            f"Target: [{self.target.x:.2f}, {self.target.y:.2f}] "
+            f"Dist: {dist:.2f} rs_conectado: {self.rs_conectado}",
+            throttle_duration_sec=1.0
+        )
+
+        if dist < 0.2 and not self.objeto_disponible and self.rs_conectado:
             self.get_logger().info("¡Objetivo alcanzado! Enviando OBJETO_DISPONIBLE al brazo")
             try:
                 self.s.setblocking(True)
@@ -210,6 +214,15 @@ class RoverHybridController(Node):
             return
 
         twist = Twist()
+
+        if v_obs != 0.0:
+            # Obstáculo real detectado → evasión pura
+            twist.linear.x = v_obs
+            twist.angular.z = w_obs
+        else:
+            # Sin obstáculo → seguir objetivo
+            twist.linear.x = max(min(v_goal, 2.0), -0.3)
+            twist.angular.z = max(min(w_goal, 2.0), -2.0)
 
         # FUSIÓN 
         twist.linear.x = v_goal + v_obs * 1.2
