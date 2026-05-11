@@ -1,0 +1,137 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+
+  <model name="broken_fence_section">
+
+    <static>true</static>
+
+    <link name="fence_link">
+
+      <!-- ========================= -->
+      <!-- POST 1 -->
+      <!-- ========================= -->
+      <visual name="post_1">
+
+        <pose>0 0 1.0 0 0 0</pose>
+
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>2.0</length>
+          </cylinder>
+        </geometry>
+
+        <material>
+          <ambient>0.2 0.2 0.2 1</ambient>
+          <diffuse>0.25 0.25 0.25 1</diffuse>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- POST 2 (inclinado) -->
+      <!-- ========================= -->
+      <visual name="post_2">
+
+        <pose>2.0 0.3 1.0 0.2 0.1 0</pose>
+
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>2.0</length>
+          </cylinder>
+        </geometry>
+
+        <material>
+          <ambient>0.2 0.2 0.2 1</ambient>
+          <diffuse>0.25 0.25 0.25 1</diffuse>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- POST 3 (caído) -->
+      <!-- ========================= -->
+      <visual name="post_3">
+
+        <pose>4.0 -0.2 0.3 1.2 0.4 1.0</pose>
+
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>2.0</length>
+          </cylinder>
+        </geometry>
+
+        <material>
+          <ambient>0.2 0.2 0.2 1</ambient>
+          <diffuse>0.25 0.25 0.25 1</diffuse>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- FENCE PANEL (intact start) -->
+      <!-- ========================= -->
+      <visual name="panel_1">
+
+        <pose>1.0 0 1.0 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>2.0 0.02 1.2</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>0.1 0.1 0.1 1</ambient>
+          <diffuse>0.15 0.15 0.15 1</diffuse>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- BROKEN PANEL (bent) -->
+      <!-- ========================= -->
+      <visual name="panel_2_bent">
+
+        <pose>3.0 0.2 0.8 0.3 0.5 0.2</pose>
+
+        <geometry>
+          <box>
+            <size>2.0 0.02 1.2</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>0.1 0.1 0.1 1</ambient>
+          <diffuse>0.15 0.15 0.15 1</diffuse>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- RUST PATCH -->
+      <!-- ========================= -->
+      <visual name="rust">
+
+        <pose>2.5 0 1.4 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>3.0 0.01 0.3</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>0.45 0.2 0.08 1</ambient>
+          <diffuse>0.55 0.25 0.1 1</diffuse>
+        </material>
+
+      </visual>
+
+    </link>
+
+  </model>
+
+</sdf>

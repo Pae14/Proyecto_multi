@@ -1,0 +1,146 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+
+  <model name="debris_pile">
+
+    <static>true</static>
+
+    <link name="debris_link">
+
+      <!-- ========================= -->
+      <!-- MAIN DEBRIS BLOCKS -->
+      <!-- ========================= -->
+
+      <visual name="chunk_1">
+        <pose>0 0 0.1 0.2 0.1 0.3</pose>
+        <geometry>
+          <box>
+            <size>0.6 0.4 0.2</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.25 0.25 0.25 1</ambient>
+          <diffuse>0.3 0.3 0.3 1</diffuse>
+        </material>
+      </visual>
+
+      <visual name="chunk_2">
+        <pose>0.3 0.2 0.15 0.1 0.3 0.6</pose>
+        <geometry>
+          <box>
+            <size>0.4 0.3 0.25</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.2 0.2 0.2 1</ambient>
+          <diffuse>0.28 0.28 0.28 1</diffuse>
+        </material>
+      </visual>
+
+      <visual name="chunk_3">
+        <pose>-0.25 -0.15 0.12 0.4 0.2 0.1</pose>
+        <geometry>
+          <box>
+            <size>0.5 0.35 0.18</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.22 0.22 0.22 1</ambient>
+          <diffuse>0.3 0.3 0.3 1</diffuse>
+        </material>
+      </visual>
+
+      <visual name="chunk_4">
+        <pose>0.1 -0.3 0.08 0.1 0.5 0.2</pose>
+        <geometry>
+          <box>
+            <size>0.3 0.25 0.12</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.18 0.18 0.18 1</ambient>
+          <diffuse>0.25 0.25 0.25 1</diffuse>
+        </material>
+      </visual>
+
+      <visual name="chunk_5">
+        <pose>-0.35 0.25 0.2 0.3 0.1 0.4</pose>
+        <geometry>
+          <box>
+            <size>0.45 0.3 0.22</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.24 0.24 0.24 1</ambient>
+          <diffuse>0.32 0.32 0.32 1</diffuse>
+        </material>
+      </visual>
+
+      <!-- ========================= -->
+      <!-- SMALL RUBBLE PIECES -->
+      <!-- ========================= -->
+
+      <visual name="small_1">
+        <pose>0.2 0.1 0.05 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.15 0.1 0.08</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.2 0.2 0.2 1</ambient>
+          <diffuse>0.26 0.26 0.26 1</diffuse>
+        </material>
+      </visual>
+
+      <visual name="small_2">
+        <pose>-0.2 -0.2 0.06 0 0 0.3</pose>
+        <geometry>
+          <box>
+            <size>0.12 0.12 0.06</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.18 0.18 0.18 1</ambient>
+          <diffuse>0.24 0.24 0.24 1</diffuse>
+        </material>
+      </visual>
+
+      <visual name="small_3">
+        <pose>0.0 -0.25 0.04 0.2 0.1 0.5</pose>
+        <geometry>
+          <box>
+            <size>0.1 0.1 0.05</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.22 0.22 0.22 1</ambient>
+          <diffuse>0.28 0.28 0.28 1</diffuse>
+        </material>
+      </visual>
+
+      <!-- ========================= -->
+      <!-- GROUND DIRT BASE -->
+      <!-- ========================= -->
+      <visual name="base_dirt">
+
+        <pose>0 0 0.01 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>1.2 1.0 0.02</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>0.15 0.12 0.08 1</ambient>
+          <diffuse>0.2 0.15 0.1 1</diffuse>
+        </material>
+
+      </visual>
+
+    </link>
+
+  </model>
+
+</sdf>

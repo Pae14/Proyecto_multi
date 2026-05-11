@@ -1,0 +1,129 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+
+  <model name="broken_pipe">
+
+    <static>true</static>
+
+    <link name="pipe_link">
+
+      <!-- ========================= -->
+      <!-- MAIN PIPE -->
+      <!-- ========================= -->
+      <collision name="collision_main">
+        <pose>0 0 1.0 0 1.57 0</pose>
+
+        <geometry>
+          <cylinder>
+            <radius>0.15</radius>
+            <length>3.0</length>
+          </cylinder>
+        </geometry>
+      </collision>
+
+      <visual name="pipe_main">
+
+        <pose>0 0 1.0 0 1.57 0</pose>
+
+        <geometry>
+          <cylinder>
+            <radius>0.15</radius>
+            <length>3.0</length>
+          </cylinder>
+        </geometry>
+
+        <material>
+          <ambient>0.25 0.25 0.27 1</ambient>
+          <diffuse>0.35 0.35 0.38 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- BROKEN SEGMENT -->
+      <!-- ========================= -->
+      <visual name="pipe_broken_segment">
+
+        <pose>1.6 0.2 0.9 0.3 0.2 0.8</pose>
+
+        <geometry>
+          <cylinder>
+            <radius>0.15</radius>
+            <length>1.2</length>
+          </cylinder>
+        </geometry>
+
+        <material>
+          <ambient>0.2 0.2 0.22 1</ambient>
+          <diffuse>0.3 0.3 0.32 1</diffuse>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- OPEN END CAP -->
+      <!-- ========================= -->
+      <visual name="pipe_open_end">
+
+        <pose>1.5 0 1.0 0 1.57 0</pose>
+
+        <geometry>
+          <cylinder>
+            <radius>0.16</radius>
+            <length>0.05</length>
+          </cylinder>
+        </geometry>
+
+        <material>
+          <ambient>0.15 0.15 0.15 1</ambient>
+          <diffuse>0.2 0.2 0.2 1</diffuse>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- RUST PATCH -->
+      <!-- ========================= -->
+      <visual name="rust_patch">
+
+        <pose>-0.8 0.0 1.1 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>1.2 0.02 0.4</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>0.5 0.2 0.05 1</ambient>
+          <diffuse>0.6 0.25 0.1 1</diffuse>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- LEAK EFFECT (visual marker) -->
+      <!-- ========================= -->
+      <visual name="leak_marker">
+
+        <pose>1.7 0 0.7 0 0 0</pose>
+
+        <geometry>
+          <sphere>
+            <radius>0.1</radius>
+          </sphere>
+        </geometry>
+
+        <material>
+          <ambient>0.0 0.3 0.0 1</ambient>
+          <diffuse>0.0 0.6 0.0 1</diffuse>
+        </material>
+
+      </visual>
+
+    </link>
+
+  </model>
+
+</sdf>
