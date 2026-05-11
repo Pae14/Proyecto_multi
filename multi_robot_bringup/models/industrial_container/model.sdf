@@ -1,0 +1,223 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+  <model name="industrial_container">
+
+    <static>true</static>
+
+    <link name="container_link">
+
+      <!-- ========================= -->
+      <!-- INERTIA -->
+      <!-- ========================= -->
+      <inertial>
+        <mass>5000.0</mass>
+        <inertia>
+          <ixx>5000</ixx>
+          <iyy>5000</iyy>
+          <izz>5000</izz>
+        </inertia>
+      </inertial>
+
+      <!-- ========================= -->
+      <!-- COLLISION -->
+      <!-- ========================= -->
+      <collision name="collision">
+        <pose>0 0 1.3 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>6.0 2.4 2.6</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <!-- ========================= -->
+      <!-- MAIN BODY -->
+      <!-- ========================= -->
+      <visual name="container_body">
+
+        <pose>0 0 1.3 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>6.0 2.4 2.6</size>
+          </box>
+        </geometry>
+
+        <material>
+          <!-- Azul industrial desgastado -->
+          <ambient>0.1 0.2 0.5 1</ambient>
+          <diffuse>0.15 0.25 0.6 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- LEFT DOOR -->
+      <!-- ========================= -->
+      <visual name="left_door">
+
+        <pose>2.98 -0.6 1.3 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>0.03 1.15 2.4</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>0.08 0.18 0.45 1</ambient>
+          <diffuse>0.12 0.22 0.55 1</diffuse>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- RIGHT DOOR -->
+      <!-- ========================= -->
+      <visual name="right_door">
+
+        <pose>2.98 0.6 1.3 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>0.03 1.15 2.4</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>0.08 0.18 0.45 1</ambient>
+          <diffuse>0.12 0.22 0.55 1</diffuse>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- CENTRAL DOOR SEAM -->
+      <!-- ========================= -->
+      <visual name="door_seam">
+
+        <pose>3.0 0 1.3 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>0.01 0.05 2.4</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>0.02 0.02 0.02 1</ambient>
+          <diffuse>0.05 0.05 0.05 1</diffuse>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- TOP RUST STRIP -->
+      <!-- ========================= -->
+      <visual name="rust_top">
+
+        <pose>0 0 2.5 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>6.02 2.42 0.05</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>0.4 0.2 0.1 1</ambient>
+          <diffuse>0.5 0.25 0.1 1</diffuse>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- SIDE RUST PATCH -->
+      <!-- ========================= -->
+      <visual name="rust_patch_side">
+
+        <pose>-1.5 1.21 1.0 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>1.2 0.02 0.8</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>0.45 0.2 0.08 1</ambient>
+          <diffuse>0.55 0.25 0.1 1</diffuse>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- BOTTOM SUPPORTS -->
+      <!-- ========================= -->
+
+      <visual name="support_1">
+        <pose>-2.5 -1.0 0.15 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>0.25 0.25 0.3</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>0.15 0.15 0.15 1</ambient>
+          <diffuse>0.2 0.2 0.2 1</diffuse>
+        </material>
+      </visual>
+
+      <visual name="support_2">
+        <pose>-2.5 1.0 0.15 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>0.25 0.25 0.3</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>0.15 0.15 0.15 1</ambient>
+          <diffuse>0.2 0.2 0.2 1</diffuse>
+        </material>
+      </visual>
+
+      <visual name="support_3">
+        <pose>2.5 -1.0 0.15 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>0.25 0.25 0.3</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>0.15 0.15 0.15 1</ambient>
+          <diffuse>0.2 0.2 0.2 1</diffuse>
+        </material>
+      </visual>
+
+      <visual name="support_4">
+        <pose>2.5 1.0 0.15 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>0.25 0.25 0.3</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>0.15 0.15 0.15 1</ambient>
+          <diffuse>0.2 0.2 0.2 1</diffuse>
+        </material>
+      </visual>
+
+    </link>
+
+  </model>
+</sdf>

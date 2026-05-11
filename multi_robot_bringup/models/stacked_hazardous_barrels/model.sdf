@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+
+  <model name="stacked_hazardous_barrels">
+
+    <static>true</static>
+
+    <!-- ========================= -->
+    <!-- BARREL 1 (BASE) -->
+    <!-- ========================= -->
+    <include>
+      <uri>model://hazardous_barrel</uri>
+      <name>barrel_1</name>
+      <pose>0 0 0.4 0 0 0</pose>
+    </include>
+
+    <!-- ========================= -->
+    <!-- BARREL 2 -->
+    <!-- ========================= -->
+    <include>
+      <uri>model://hazardous_barrel</uri>
+      <name>barrel_2</name>
+      <pose>0.0 0.0 1.2 0 0 0</pose>
+    </include>
+
+    <!-- ========================= -->
+    <!-- BARREL 3 (slightly tilted) -->
+    <!-- ========================= -->
+    <include>
+      <uri>model://hazardous_barrel</uri>
+      <name>barrel_3</name>
+      <pose>0.1 -0.1 2.0 0.1 0.1 0.3</pose>
+    </include>
+
+    <!-- ========================= -->
+    <!-- BARREL 4 (fallen / unstable) -->
+    <!-- ========================= -->
+    <include>
+      <uri>model://hazardous_barrel</uri>
+      <name>barrel_4</name>
+      <pose>-0.3 0.2 0.4 0.2 0.1 1.2</pose>
+    </include>
+
+    <!-- ========================= -->
+    <!-- BARREL 5 (top, slightly rotated) -->
+    <!-- ========================= -->
+    <include>
+      <uri>model://hazardous_barrel</uri>
+      <name>barrel_5</name>
+      <pose>0.2 0.1 2.7 0 0 1.57</pose>
+    </include>
+
+  </model>
+
+</sdf>

@@ -1,0 +1,138 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+
+  <model name="chemical_tank">
+
+    <static>true</static>
+
+    <link name="tank_link">
+
+      <!-- ========================= -->
+      <!-- INERTIA -->
+      <!-- ========================= -->
+      <inertial>
+        <mass>800.0</mass>
+        <inertia>
+          <ixx>200.0</ixx>
+          <iyy>800.0</iyy>
+          <izz>800.0</izz>
+        </inertia>
+      </inertial>
+
+      <!-- ========================= -->
+      <!-- MAIN CYLINDER BODY -->
+      <!-- ========================= -->
+      <collision name="collision">
+
+        <pose>0 0 1.0 0 1.57 0</pose>
+
+        <geometry>
+          <cylinder>
+            <radius>0.8</radius>
+            <length>4.5</length>
+          </cylinder>
+        </geometry>
+
+      </collision>
+
+      <visual name="tank_body">
+
+        <pose>0 0 1.0 0 1.57 0</pose>
+
+        <geometry>
+          <cylinder>
+            <radius>0.8</radius>
+            <length>4.5</length>
+          </cylinder>
+        </geometry>
+
+        <material>
+          <ambient>0.2 0.2 0.2 1</ambient>
+          <diffuse>0.35 0.35 0.38 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- SUPPORT LEGS -->
+      <!-- ========================= -->
+
+      <visual name="leg_1">
+        <pose>1.5 0 0.3 0 0 0</pose>
+
+        <geometry>
+          <cylinder>
+            <radius>0.08</radius>
+            <length>0.6</length>
+          </cylinder>
+        </geometry>
+
+        <material>
+          <ambient>0.15 0.15 0.15 1</ambient>
+          <diffuse>0.2 0.2 0.2 1</diffuse>
+        </material>
+      </visual>
+
+      <visual name="leg_2">
+        <pose>-1.5 0 0.3 0 0 0</pose>
+
+        <geometry>
+          <cylinder>
+            <radius>0.08</radius>
+            <length>0.6</length>
+          </cylinder>
+        </geometry>
+
+        <material>
+          <ambient>0.15 0.15 0.15 1</ambient>
+          <diffuse>0.2 0.2 0.2 1</diffuse>
+        </material>
+      </visual>
+
+      <!-- ========================= -->
+      <!-- PIPE CONNECTION -->
+      <!-- ========================= -->
+      <visual name="pipe">
+
+        <pose>0 0.9 1.2 0 1.57 0</pose>
+
+        <geometry>
+          <cylinder>
+            <radius>0.15</radius>
+            <length>1.2</length>
+          </cylinder>
+        </geometry>
+
+        <material>
+          <ambient>0.25 0.25 0.25 1</ambient>
+          <diffuse>0.3 0.3 0.3 1</diffuse>
+        </material>
+
+      </visual>
+
+      <!-- ========================= -->
+      <!-- RUST PATCH -->
+      <!-- ========================= -->
+      <visual name="rust_patch">
+
+        <pose>-1.0 0.75 1.2 0 0 0</pose>
+
+        <geometry>
+          <box>
+            <size>0.8 0.02 0.6</size>
+          </box>
+        </geometry>
+
+        <material>
+          <ambient>0.4 0.15 0.05 1</ambient>
+          <diffuse>0.5 0.2 0.1 1</diffuse>
+        </material>
+
+      </visual>
+
+    </link>
+
+  </model>
+
+</sdf>

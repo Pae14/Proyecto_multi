@@ -45,7 +45,28 @@
     
     <!-- OBJETOS PARA EL DATASET (Fuera de las casetas) -->
     <include><uri>model://hazardous_barrel</uri><name>barril_suelo</name><pose>2 9 0.4 0 0 0</pose></include>
+    <!--<include><uri>model://industrial_container</uri><name>contenedor_industrial</name><pose> 10 9 0.4 0 0 0</pose></include>-->
+    <include><uri>model://palets</uri><name>palet</name><pose>5 9 0 0 0 0.5236</pose></include>
+    <include><uri>model://palets</uri><name>palet1</name><pose>4 7 0 0 0 0</pose></include>
+    <include><uri>model://palets</uri><name>palet2</name><pose>4 8 0 0 0 0</pose></include>
+    <include><uri>model://palets</uri><name>palet3</name><pose>5 7 0 0 0.5236 -0.5236</pose></include>
+    <include><uri>model://palets</uri><name>palet4</name><pose>5 8 0 0 0.4363 -0.5236</pose></include>
 
-  
+    <include><uri>model://palets</uri><name>palet5</name><pose>10 1 0 0 0 0.5236</pose></include>
+    <include><uri>model://palets</uri><name>palet6</name><pose>9 -1 0 0 0 0</pose></include>
+    <include><uri>model://palets</uri><name>palet7</name><pose>9 0 0 0 0 0</pose></include>
+    <include><uri>model://palets</uri><name>palet8</name><pose>10 -1 0 0 0.5236 -0.5236</pose></include>
+    <include><uri>model://palets</uri><name>palet9</name><pose>10 0 0 0 0.4363 -0.5236</pose></include>
+
+    <include><uri>model://chemical_tank</uri><name>tanque_quimico</name><pose>7 9 0 0 0 1.5708</pose></include>
+    <include><uri>model://chemical_tank</uri><name>tanque_quimico2</name><pose>10 3 0 0 0 1.5708</pose></include>
+
+    <include><uri>model://broken_fence_section</uri><name>broken_fence_section0</name><pose>0 -9 0 0 0 0</pose></include>
+    <include><uri>model://broken_fence_section</uri><name>broken_fence_section1</name><pose>5 -9 0 0 0 0.3</pose></include>
+    <include><uri>model://broken_fence_section</uri><name>broken_fence_section2</name><pose>10 -9 0 0 0 1.2</pose></include>
+
+    <include><uri>model://broken_pipe</uri><name>broken_pipe0</name><pose>-5 -9 0 1.5708 0 1.5708</pose></include>
+    <include><uri>model://debris_pile</uri><name>debris_pile0</name><pose>-5 -5 0 1.5708 0 1.5708</pose></include>
+
   </world>
 </sdf>
