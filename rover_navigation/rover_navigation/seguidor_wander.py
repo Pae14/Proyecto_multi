@@ -30,7 +30,7 @@ class RoverHybridController(Node):
 
         #===FLAGS PARA EL ROBOT STUDIO===
         self.rs_conectado = False
-        self.objeto_disponible=False
+        self.mensaje_enviado=False
         self.abb_activo=False
 
         self.buffer_socket = ""
@@ -64,14 +64,12 @@ class RoverHybridController(Node):
     # CALLBACKS
     def target_callback(self, msg):
         if self.abb_activo:
+            self.target=msg
             return
         
-        # Si el target es nuevo o el Rover estaba parado, lo fijamos
-        if self.target is None:
-            self.get_logger().info(f"🎯 NUEVO OBJETIVO RECIBIDO: X={msg.x:.2f}, Y={msg.y:.2f}")
-            self.target = msg
-            self.objeto_disponible = False
-
+        self.get_logger().info(f"🎯 NUEVO OBJETIVO RECIBIDO: X={msg.x:.2f}, Y={msg.y:.2f}")
+        self.target = msg
+        self.objeto_disponible = False
 
     def odom_callback(self, msg):
         self.pose = msg.pose.pose
@@ -96,7 +94,7 @@ class RoverHybridController(Node):
                 if "HECHO" in linea: #si en el mensaje viene la cadena "HECHO"
                     self.get_logger().info("Detectado fin de trayectoria")
                     self.abb_activo=False
-                    self.objeto_disponible=False
+                    self.mensaje_enviado=False
                     self.target=None
                     data_limpia = linea.replace("HECHO", "") #limpiamos el HECHO para no perder la posición
                     if data_limpia:
@@ -212,17 +210,17 @@ class RoverHybridController(Node):
             throttle_duration_sec=1.0
         )
 
-        if dist < 0.5 and not self.objeto_disponible and self.rs_conectado:
-            self.get_logger().info("¡Objetivo alcanzado! Enviando OBJETO_DISPONIBLE al brazo")
+        if dist < 0.1 and not self.mensaje_enviado and self.rs_conectado:
+            self.get_logger().info("¡Objetivo alcanzado! Enviando mensaje_enviado al brazo")
             try:
                 self.s.setblocking(True)
                 self.s.send("OBJETO_DISPONIBLE".encode())
                 self.s.setblocking(False)
-                self.objeto_disponible = True
+                self.mensaje_enviado = True
                 self.abb_activo = True
                 self.target=None
             except Exception as e:
-                self.get_logger().error(f"Error enviando OBJETO_DISPONIBLE: {e}")
+                self.get_logger().error(f"Error enviando mensaje_enviado: {e}")
                 self.rs_conectado=False
 
         if self.abb_activo:
