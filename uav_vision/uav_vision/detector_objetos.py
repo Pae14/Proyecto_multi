@@ -146,7 +146,9 @@ class DetectorDobleValidacion(Node):
                 self.current_state = "YOLO_DETECT"
                 for box in results[0].boxes:
                     label = self.model.model.names.get(int(box.cls[0]), "obj")
-                    if label in ['dump', 'backpack', 'toolbox']:
+                    if label == 'dump':
+                        continue
+                    if label in ['backpack', 'toolbox']:
                         mx, my, dist_rel = self.proyectar_a_mundo(box.xywh[0][0], box.xywh[0][1] + (box.xywh[0][3]*0.4), w, h)
                         
                         if mx is not None and dist_rel < 10.0:
