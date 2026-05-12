@@ -19,14 +19,9 @@
           </plane>
         </geometry>
         <material>
-          <ambient>0.8 0.7 0.5 1.0</ambient>
-          <diffuse>0.8 0.7 0.5 1.0</diffuse>
+          <ambient>0.7 0.7 0.7 1.0</ambient>
+          <diffuse>0.7 0.7 0.7 1.0</diffuse>
           <specular>0.1 0.1 0.1 1.0</specular>
-          <pbr>
-            <metal>
-              <albedo_map>materials/textures/industrial2.jpg</albedo_map>
-            </metal>
-          </pbr>
         </material>
       </visual>
     </link>

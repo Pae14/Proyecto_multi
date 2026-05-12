@@ -30,10 +30,10 @@ class RoverHybridController(Node):
 
         #===FLAGS PARA EL ROBOT STUDIO===
         self.rs_conectado = False
-        self.mensaje_enviado=False
+        self.objeto_disponible=False
         self.abb_activo=False
-
         self.buffer_socket = ""
+
 
         #==CONFIGURACION DE SOCKET===
         self.s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -63,13 +63,8 @@ class RoverHybridController(Node):
 
     # CALLBACKS
     def target_callback(self, msg):
-        if self.abb_activo:
-            self.target=msg
-            return
-        
-        self.get_logger().info(f"🎯 NUEVO OBJETIVO RECIBIDO: X={msg.x:.2f}, Y={msg.y:.2f}")
         self.target = msg
-        self.objeto_disponible = False
+        self.mensaje_enviado=False
 
     def odom_callback(self, msg):
         self.pose = msg.pose.pose
@@ -82,25 +77,19 @@ class RoverHybridController(Node):
             return
         
         try:
-            #Recibimos los del robotstudio datos
             chunk = self.s.recv(1024).decode()
+            if not chunk: return
             self.buffer_socket += chunk
-
             while '\n' in self.buffer_socket:
                 linea, self.buffer_socket = self.buffer_socket.split('\n', 1)
                 linea = linea.strip()
-                if not linea:
-                    continue
-                if "HECHO" in linea: #si en el mensaje viene la cadena "HECHO"
-                    self.get_logger().info("Detectado fin de trayectoria")
-                    self.abb_activo=False
-                    self.mensaje_enviado=False
-                    self.target=None
-                    data_limpia = linea.replace("HECHO", "") #limpiamos el HECHO para no perder la posición
-                    if data_limpia:
-                        self.publicar_articulaciones(data_limpia)
-                else:
-                    self.publicar_articulaciones(linea) #publicar
+                if "HECHO" in linea:
+                    self.get_logger().info("TRAYECTORIA COMPLETA. Rover retomando...")
+                    self.abb_activo = False
+                    self.mensaje_enviado = False
+                    self.target = None 
+                    linea = linea.replace("HECHO", "")
+                if linea: self.publicar_articulaciones(linea)
         except (BlockingIOError, socket.error):
             pass
         except Exception as e:
@@ -147,10 +136,10 @@ class RoverHybridController(Node):
         right = [r for r in ranges[225:315] if 0.3 < r < 5.0]
         d_front = min(front) if front else 10.0
 
-        if d_front < 1.0: 
+        if d_front < 0.8: 
             d_left  = min(left)  if left  else 10.0
             d_right = min(right) if right else 10.0
-            return -0.1, 1.0 if d_left > d_right else -1.0
+            return -0.15, 1.2 if d_left > d_right else -1.2
 
         return 0.0, 0.0
 
@@ -163,6 +152,9 @@ class RoverHybridController(Node):
         dy = self.target.y - self.pose.position.y
 
         dist = math.sqrt(dx**2 + dy**2)
+
+        if dist < 0.05:
+            return 0.0, 0.0, dist
 
         q = self.pose.orientation
         yaw = math.atan2(2*(q.w*q.z + q.x*q.y),
@@ -177,29 +169,18 @@ class RoverHybridController(Node):
         while error < -math.pi:
             error += 2*math.pi
 
-        twist = Twist()
+        alignment=max(0.0, math.cos(error))
+        v=min(1.5, dist) * alignment
+        w= max(min(1.8*error, 1.8),-1.8)
 
-        if dist > 0.01:
-            # Si está girando mucho → avanza lento
-            if abs(error) > 0.8:
-                return 0.0, max(min(1.5 * error, 1.5), -1.5), dist
-            else:
-                return 1.5, max(min(1.0 * error, 1.0), -1.0), dist
-
-        else:
-            return 0.2 * dist, 0.5 * error, dist
+        return v,w,dist
 
         
-
     # FUSION CONTROL
     def control_loop(self):
-        if self.target is None:
-            self.get_logger().warn("Sin target", throttle_duration_sec=3.0)
+        if self.target is None or self.pose is None:
             return
-        if self.pose is None:
-            self.get_logger().warn("Sin pose/odom", throttle_duration_sec=3.0)
-            return
-
+    
         v_goal, w_goal, dist = self.compute_goal()
         v_obs, w_obs = self.compute_avoidance()
 
@@ -210,17 +191,17 @@ class RoverHybridController(Node):
             throttle_duration_sec=1.0
         )
 
-        if dist < 0.1 and not self.mensaje_enviado and self.rs_conectado:
-            self.get_logger().info("¡Objetivo alcanzado! Enviando mensaje_enviado al brazo")
+        if dist < 0.5 and not self.objeto_disponible and self.rs_conectado:
+            self.get_logger().info("¡Objetivo alcanzado! Enviando OBJETO_DISPONIBLE al brazo")
             try:
                 self.s.setblocking(True)
                 self.s.send("OBJETO_DISPONIBLE".encode())
                 self.s.setblocking(False)
-                self.mensaje_enviado = True
+                self.objeto_disponible = True
                 self.abb_activo = True
                 self.target=None
             except Exception as e:
-                self.get_logger().error(f"Error enviando mensaje_enviado: {e}")
+                self.get_logger().error(f"Error enviando OBJETO_DISPONIBLE: {e}")
                 self.rs_conectado=False
 
         if self.abb_activo:
@@ -230,7 +211,7 @@ class RoverHybridController(Node):
         twist = Twist()
 
         if v_obs != 0.0:
-            # Obstáculo real detectado → evasión pura
+            # Obstáculo  → evasión pura
             twist.linear.x = v_obs
             twist.angular.z = w_obs
         else:
